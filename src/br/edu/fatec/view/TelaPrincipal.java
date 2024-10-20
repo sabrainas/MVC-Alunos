@@ -68,7 +68,7 @@ public class TelaPrincipal extends JFrame {
     private JLabel lblMensagem;
     private JLabel lblAluno;
     private JLabel lblCursoAluno;
-    private JTextField txtNota;
+    private JTextField txtNota1;
     private JTextField txtFaltas;
     //============================================//
     private Aluno aluno;
@@ -78,6 +78,7 @@ public class TelaPrincipal extends JFrame {
     private Notas notas;
     private NotasDAO notasDao;
     private JTextField txtRaBoletim;
+    private JTextField txtNota2;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -448,7 +449,7 @@ public class TelaPrincipal extends JFrame {
 		
 		JComboBox cmbBoxDisciplina = new JComboBox();
 		cmbBoxDisciplina.setModel(new DefaultComboBoxModel(new String[] {"  ", "Programação Orientada a Objetos"}));
-		cmbBoxDisciplina.setBounds(94, 180, 570, 35);
+		cmbBoxDisciplina.setBounds(94, 180, 504, 35);
 		notasFaltas.add(cmbBoxDisciplina);
 		
 		JLabel lblSemestre = new JLabel("Semestre:");
@@ -458,27 +459,27 @@ public class TelaPrincipal extends JFrame {
 		
 		JComboBox cmbBoxSemestre = new JComboBox();
 		cmbBoxSemestre.setModel(new DefaultComboBoxModel(new String[] {"  ", "2022-1", "2022-2", "2023-1", "2023-2", "2024-1", "2024-2"}));
-		cmbBoxSemestre.setBounds(94, 244, 203, 35);
+		cmbBoxSemestre.setBounds(94, 244, 121, 35);
 		notasFaltas.add(cmbBoxSemestre);
 		
-		JLabel lblNota = new JLabel("Nota:");
-		lblNota.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblNota.setBounds(332, 250, 74, 29);
-		notasFaltas.add(lblNota);
+		JLabel lblNota1 = new JLabel("Nota 1:");
+		lblNota1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblNota1.setBounds(225, 250, 53, 29);
+		notasFaltas.add(lblNota1);
 		
-		txtNota = new JTextField();
-		txtNota.setColumns(10);
-		txtNota.setBounds(379, 250, 144, 29);
-		notasFaltas.add(txtNota);
+		txtNota1 = new JTextField();
+		txtNota1.setColumns(10);
+		txtNota1.setBounds(288, 252, 45, 29);
+		notasFaltas.add(txtNota1);
 		
 		JLabel lblFaltas = new JLabel("Faltas:");
 		lblFaltas.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblFaltas.setBounds(561, 250, 74, 29);
+		lblFaltas.setBounds(608, 181, 74, 29);
 		notasFaltas.add(lblFaltas);
 		
 		txtFaltas = new JTextField();
 		txtFaltas.setColumns(10);
-		txtFaltas.setBounds(610, 250, 144, 29);
+		txtFaltas.setBounds(658, 182, 85, 29);
 		notasFaltas.add(txtFaltas);
 						
 		JButton btnBuscarRa = new JButton("Buscar");
@@ -544,7 +545,15 @@ public class TelaPrincipal extends JFrame {
 		        		// Defina os valores para notas
 			            notas.setDisciplina((String) cmbBoxDisciplina.getSelectedItem());
 			            notas.setSemestre((String) cmbBoxSemestre.getSelectedItem());
-			            notas.setNota(Double.parseDouble(txtNota.getText()));
+			            
+			            double nota1 = Double.parseDouble(txtNota1.getText());
+		                double nota2 = Double.parseDouble(txtNota2.getText());
+		                notas.setNota(nota1);
+		                notas.setNota2(nota2);
+			            double media = (nota1 + nota2) / 2;
+			            
+			            notas.setMedia(media);
+			            
 			            notas.setFaltas(Integer.parseInt(txtFaltas.getText()));
 			            notas.setRaAluno(aluno.getRaAluno());
 			            
@@ -571,6 +580,47 @@ public class TelaPrincipal extends JFrame {
 		btnSalvarNotas.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnSalvarNotas.setBounds(669, 309, 85, 35);
 		notasFaltas.add(btnSalvarNotas);
+		
+		JLabel lblNota2 = new JLabel("Nota 2:");
+		lblNota2.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblNota2.setBounds(343, 250, 57, 29);
+		notasFaltas.add(lblNota2);
+		
+		txtNota2 = new JTextField();
+		txtNota2.setColumns(10);
+		txtNota2.setBounds(410, 252, 45, 29);
+		notasFaltas.add(txtNota2);
+		
+		JLabel lblMedia = new JLabel("Média:");
+		lblMedia.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblMedia.setBounds(560, 250, 57, 29);
+		notasFaltas.add(lblMedia);
+		
+		JLabel lblMostrarMedia = new JLabel("");
+		lblMostrarMedia.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblMostrarMedia.setBounds(608, 250, 165, 29);
+		notasFaltas.add(lblMostrarMedia);
+		
+		JButton btnCalcular = new JButton("Calcular");
+		btnCalcular.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					NotasDAO notasDao = new NotasDAO();
+					int ra = Integer.parseInt(txtRaBusca.getText());
+					List<Notas> listaNotas = notasDao.consultar(ra);
+					System.out.println("Notas encontradas: " + listaNotas.size());
+					
+					String resultado = notasDao.calcularMedia(listaNotas);
+					lblMostrarMedia.setText(resultado);
+					
+				}catch(Exception ex) {
+					System.out.println("Erro " + ex.getMessage());
+				}
+			}
+		});
+		btnCalcular.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnCalcular.setBounds(465, 247, 85, 35);
+		notasFaltas.add(btnCalcular);
 		
 		//========================== BOLETIM =============================//
 		JPanel dadosBoletim = new JPanel();
@@ -605,108 +655,106 @@ public class TelaPrincipal extends JFrame {
 		
 		JLabel lblDisciplinaBoletim = new JLabel("Disciplinas");
 		lblDisciplinaBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblDisciplinaBoletim.setBounds(61, 181, 371, 26);
+		lblDisciplinaBoletim.setBounds(37, 181, 371, 26);
 		lblDisciplinaBoletim.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
 		dadosBoletim.add(lblDisciplinaBoletim);
 		
 		JLabel lblNotaBoletim = new JLabel("Notas");
 		lblNotaBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblNotaBoletim.setBounds(451, 181, 85, 26);
+		lblNotaBoletim.setBounds(430, 181, 85, 26);
 		lblNotaBoletim.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
 		dadosBoletim.add(lblNotaBoletim);
 		
 		JLabel lblFaltaBoletim = new JLabel("Faltas");
 		lblFaltaBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblFaltaBoletim.setBounds(561, 181, 85, 26);
+		lblFaltaBoletim.setBounds(537, 181, 85, 26);
 		lblFaltaBoletim.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
 		dadosBoletim.add(lblFaltaBoletim);
 		
 		JLabel disciplinaBoletim = new JLabel("");
 		disciplinaBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		disciplinaBoletim.setBounds(61, 227, 371, 26);
+		disciplinaBoletim.setBounds(37, 227, 371, 26);
 		dadosBoletim.add(disciplinaBoletim);
 		
 		JLabel notasBoletim = new JLabel("");
 		notasBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		notasBoletim.setBounds(451, 227, 85, 26);
+		notasBoletim.setBounds(430, 227, 85, 26);
 		dadosBoletim.add(notasBoletim);
 		
 		JLabel faltasBoletim = new JLabel("");
 		faltasBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		faltasBoletim.setBounds(561, 227, 85, 26);
+		faltasBoletim.setBounds(537, 227, 85, 26);
 		dadosBoletim.add(faltasBoletim);
 		
 		JButton btnBuscarBoletim = new JButton("Buscar");
 		btnBuscarBoletim.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					AlunoDAO alunoDao = new AlunoDAO();
-					int ra = Integer.parseInt(txtRaBoletim.getText());
-					aluno = alunoDao.consultar(ra);
-					
-					lblNomeAluno.setText(aluno.getNomeAluno());
-					//verifica se o aluno foi encontrado
-					if (aluno != null) {
-						System.out.println("Aluno encontrado: " + aluno.getNomeAluno());
-                        //mostra o aluno
-						lblNomeAluno.setText("Aluno: " + aluno.getNomeAluno());
-						lblRaAluno.setText("RA: " + String.valueOf(aluno.getRaAluno()));
-						
-                        CursoDAO cursoDao = new CursoDAO();
-                        Curso curso = cursoDao.consultar(aluno.getRaAluno());
-                        
-                        if(curso != null) {
-                        	System.out.println("Curso encontrado: " + curso.getCurso());
-                        	lblCursoBoletim.setText("Curso: " + curso.getCurso());
-                        	
-                        	DisciplinaDAO disciplinaDao = new DisciplinaDAO(); // Certifique-se de passar a conexão correta
-                            List<Disciplina> disciplinas = disciplinaDao.getDisciplinas(curso.getIdCurso());
-                            if (disciplinas != null && !disciplinas.isEmpty()) {
-                                System.out.println("Disciplinas encontradas: " + disciplinas.size());
-                            } else {
-                                System.out.println("Nenhuma disciplina encontrada.");
-                            }
-                        	
-                        	disciplinaBoletim.setText("");
-                        	notasBoletim.setText("");
-                        	faltasBoletim.setText("");
-                        	                        	
-                        	for(Disciplina disciplina : disciplinas) {
-                        		NotasDAO notasDao = new NotasDAO();
-                        		Notas notas = notasDao.consultar(aluno.getRaAluno(), disciplina.getIdDisciplina());
-
-                        		System.out.println("Consultando notas para RA: " + aluno.getRaAluno() + ", Disciplina: " + disciplina.getNomeDisciplina());
-                        		if (notas != null) {
-                        			System.out.println("Notas encontradas: Nota = " + notas.getNota() + ", Faltas = " + notas.getFaltas());                           		
-                            		disciplinaBoletim.setText(disciplina.getNomeDisciplina());
-                                    notasBoletim.setText(String.valueOf(notas.getNota()));
-                                    faltasBoletim.setText(String.valueOf(notas.getFaltas()));
-                                } else {
-                                	System.out.println("Notas não encontradas para a disciplina: " + disciplina.getNomeDisciplina());
-                                    disciplinaBoletim.setText(disciplina.getNomeDisciplina());
-                                    notasBoletim.setText("Nota não encontrada");
-                                    faltasBoletim.setText("Faltas não encontradas");
-                                }
-                        		                        		
-                        	}
-                        }else {
-                        	lblCursoAluno.setText("Curso não encontrado");
-                        }
-                    } else {
-                        lblAluno.setText("Aluno não encontrado.");
-                        lblCursoAluno.setText("Curso não encontrado");
-                    }
-					
+		    public void actionPerformed(ActionEvent e) {
+		        try {
+		            AlunoDAO alunoDao = new AlunoDAO();
+		            int ra = Integer.parseInt(txtRaBoletim.getText());
+		            aluno = alunoDao.consultar(ra);
+		            
+		            lblNomeAluno.setText(aluno.getNomeAluno());
+		            // verifica se o aluno foi encontrado
+		            if (aluno != null) {
+		                System.out.println("Aluno encontrado: " + aluno.getNomeAluno());
+		                lblNomeAluno.setText("Aluno: " + aluno.getNomeAluno());
+		                lblRaAluno.setText("RA: " + String.valueOf(aluno.getRaAluno()));
+		                
+		                CursoDAO cursoDao = new CursoDAO();
+		                Curso curso = cursoDao.consultar(aluno.getRaAluno());
+		                
+		                if (curso != null) {
+		                    System.out.println("Curso encontrado: " + curso.getCurso());
+		                    lblCursoBoletim.setText("Curso: " + curso.getCurso());
+		                    
+		                    NotasDAO notasDao = new NotasDAO();
+		                    List<Notas> listaNotas = notasDao.consultar(aluno.getRaAluno());
+		                    
+		                    if (listaNotas != null && !listaNotas.isEmpty()) {
+		                        System.out.println("Notas encontradas: " + listaNotas.size());
+		                        for (Notas notas : listaNotas) {
+		                            System.out.println("Disciplina: " + notas.getDisciplina() + ", Nota: " + notas.getNota() + ", Faltas: " + notas.getFaltas());
+		                  
+		                            disciplinaBoletim.setText(notas.getDisciplina() + "\n");
+		                            notasBoletim.setText(String.valueOf(notas.getNota()) + "\n");
+		                            faltasBoletim.setText(String.valueOf(notas.getFaltas()) + "\n");
+		                        }
+		                    } else {
+		                        System.out.println("Nenhuma nota encontrada para o aluno.");
+		                        disciplinaBoletim.setText("Nenhuma nota encontrada.");
+		                        notasBoletim.setText("Nenhuma nota encontrada.");
+		                        faltasBoletim.setText("Nenhuma falta encontrada.");
+		                    }
+		                } else {
+		                    lblCursoAluno.setText("Curso não encontrado");
+		                }
+		            } else {
+		                lblAluno.setText("Aluno não encontrado.");
+		                lblCursoAluno.setText("Curso não encontrado");
+		            }
 		        } catch (Exception ex) {
 		            // Exibe outros erros no console ou em um label
 		            System.out.println("Erro: " + ex.getMessage());
 		            ex.printStackTrace();
 		        }
-			}
+		    }
 		});
+
 		btnBuscarBoletim.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnBuscarBoletim.setBounds(363, 19, 85, 35);
 		dadosBoletim.add(btnBuscarBoletim);
+		
+		JLabel lblSituacao = new JLabel("Situação");
+		lblSituacao.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblSituacao.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+		lblSituacao.setBounds(647, 181, 85, 26);
+		dadosBoletim.add(lblSituacao);
+		
+		JLabel situacaoBoletim = new JLabel("");
+		situacaoBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		situacaoBoletim.setBounds(647, 227, 85, 26);
+		dadosBoletim.add(situacaoBoletim);
 		
 		setAllFieldsEnabled(false);
 	}

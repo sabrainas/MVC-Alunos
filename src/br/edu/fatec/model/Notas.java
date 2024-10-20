@@ -5,21 +5,41 @@ public class Notas {
 	private int idDisciplina;
 	private String disciplina;
 	private String semestre;
-	private double nota;
+	private Double nota;
+	private Double nota2;
+	private Double media;
 	private int faltas;
 	private int raAluno;
 	
-	public Notas(int idNota, String disciplina, String semestre, double nota, int faltas, int raAluno, int idDisciplina) {
+	public Notas(int idNota, String disciplina, String semestre, Double nota, Double nota2, Double media, int faltas, int raAluno, int idDisciplina) {
 		super();
 		this.idNota = idNota;
 		this.disciplina = disciplina;
 		this.semestre = semestre;
 		this.nota = nota;
+		this.nota2 = nota2;
+		this.media = media;
 		this.faltas = faltas;
 		this.raAluno = raAluno;
 		this.idDisciplina = idDisciplina;
 	}
 	
+	public Double getNota2() {
+		return (nota2 != null) ? nota2 : 0.0;
+	}
+
+	public void setNota2(double nota2) {
+		this.nota2 = nota2;
+	}
+
+	public Double getMedia() {
+		return media;
+	}
+
+	public void setMedia(double media) {
+		this.media = media;
+	}
+
 	public int getIdDisciplina() {
 		return idDisciplina;
 	}
@@ -64,8 +84,8 @@ public class Notas {
 		this.semestre = semestre;
 	}
 
-	public double getNota() {
-		return nota;
+	public Double getNota() {
+		return (nota != null) ? nota : 0.0;
 	}
 
 	public void setNota(double nota) {
