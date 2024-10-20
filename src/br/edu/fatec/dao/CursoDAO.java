@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.edu.fatec.model.Aluno;
 import br.edu.fatec.model.Curso;
+import br.edu.fatec.model.Disciplina;
 import br.edu.fatec.util.ConnectionFactory;
 
 public class CursoDAO {
@@ -23,7 +26,7 @@ public class CursoDAO {
 		}
 	}
 	
-
+	//======================== DELETE ===================================//
 	public void excluir(Curso curso) throws Exception{
 		if(curso == null)
 			throw new Exception("O valor passado não pode ser nulo");
@@ -39,6 +42,8 @@ public class CursoDAO {
 			ConnectionFactory.closeConnection(conn, ps);
 		}
 	}
+	
+	//===============================READ - CADASTRO ALUNO ==========================================//
 	public Curso consultar(String nomeCurso, String campus, String periodo) throws Exception{
 		Curso curso = null;
 		
@@ -61,6 +66,7 @@ public class CursoDAO {
 		}
 		return curso;
 	}
+	//===================================== READ - BUSCAR DADOS ==========================================//
 	public Curso consultar(int raAluno) throws Exception{
 		Curso curso = null;
 		try {
@@ -84,6 +90,37 @@ public class CursoDAO {
 		}
 		return curso;
 	}
+	//=================================== READ - BUSCAR DISCIPLINAS ============================================//
+	public List<Disciplina> getDisciplinas(int idCurso) throws Exception {
+	    List<Disciplina> disciplinas = new ArrayList<>();
+
+	    if (idCurso <= 0) {
+	        throw new IllegalArgumentException("ID do curso deve ser positivo.");
+	    }
+
+	    String SQL = "SELECT * FROM disciplinas WHERE idCurso = ?";
+
+	    try (Connection conn = ConnectionFactory.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(SQL)) {
+
+	        ps.setInt(1, idCurso);
+	        try (ResultSet rs = ps.executeQuery()) {
+	            while (rs.next()) {
+	                Disciplina disciplina = new Disciplina();
+	                disciplina.setIdDisciplina(rs.getInt("idDisciplina"));
+	                disciplina.setNomeDisciplina(rs.getString("nomeDisciplina"));
+	                disciplinas.add(disciplina);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        throw new Exception("Erro ao consultar disciplinas: " + e.getMessage(), e);
+	    }
+
+	    return disciplinas;
+	}
+
+	
+	//================================ UPDATE ===========================================//
 	public void editar(Curso curso) throws Exception{
 		try {
 			if(curso == null)

@@ -2,13 +2,14 @@ package br.edu.fatec.model;
 
 public class Notas {
 	private int idNota;
+	private int idDisciplina;
 	private String disciplina;
 	private String semestre;
 	private double nota;
 	private int faltas;
 	private int raAluno;
 	
-	public Notas(int idNota, String disciplina, String semestre, double nota, int faltas, int raAluno) {
+	public Notas(int idNota, String disciplina, String semestre, double nota, int faltas, int raAluno, int idDisciplina) {
 		super();
 		this.idNota = idNota;
 		this.disciplina = disciplina;
@@ -16,8 +17,17 @@ public class Notas {
 		this.nota = nota;
 		this.faltas = faltas;
 		this.raAluno = raAluno;
+		this.idDisciplina = idDisciplina;
 	}
 	
+	public int getIdDisciplina() {
+		return idDisciplina;
+	}
+
+	public void setIdDisciplina(int idDisciplina) {
+		this.idDisciplina = idDisciplina;
+	}
+
 	public int getRaAluno() {
 		return raAluno;
 	}
