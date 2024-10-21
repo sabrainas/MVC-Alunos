@@ -20,6 +20,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
+
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
@@ -38,6 +40,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.ScrollPane;
 import java.awt.Scrollbar;
+import javax.swing.JSeparator;
 
 public class TelaPrincipal extends JFrame {
 	
@@ -79,6 +82,7 @@ public class TelaPrincipal extends JFrame {
     private NotasDAO notasDao;
     private JTextField txtRaBoletim;
     private JTextField txtNota2;
+    private JMenuItem mnEditarNotas;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -104,30 +108,110 @@ public class TelaPrincipal extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
-		JMenu mnArquivo = new JMenu("Arquivo");
-		mnArquivo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnArquivo.setForeground(new Color(0, 0, 0));
-		menuBar.add(mnArquivo);
+		JMenu menuAluno = new JMenu("Aluno");
+		menuAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuAluno.setForeground(new Color(0, 0, 0));
+		menuBar.add(menuAluno);
 		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Editar");
-		mntmNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
-		mntmNewMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnArquivo.add(mntmNewMenuItem);
+		JMenuItem mnEditarAluno = new JMenuItem("Alterar");
+		mnEditarAluno.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				JFrame alterarFrame = new JFrame("Alterar Aluno");
+				alterarFrame.setSize(400, 300);
+		     
+		        JLabel lblRa = new JLabel("RA do Aluno:");
+		        JTextField txtRaConsulta = new JTextField();
+		        JButton btnConsultar = new JButton("Consultar");
+
+		        JLabel lblNome = new JLabel("Nome:");
+		        JTextField txtNomeAlterar = new JTextField();
+
+		        JButton btnSalvar = new JButton("Salvar Alterações");
+
+		        
+		        alterarFrame.getContentPane().add(lblRa);
+		        alterarFrame.getContentPane().add(txtRaConsulta);
+		        alterarFrame.getContentPane().add(new JLabel()); 
+		        alterarFrame.getContentPane().add(btnConsultar);
+		        alterarFrame.getContentPane().add(lblNome);
+		        alterarFrame.getContentPane().add(txtNomeAlterar);
+		        alterarFrame.getContentPane().add(new JLabel()); 
+		        alterarFrame.getContentPane().add(btnSalvar);
+
+		        alterarFrame.setVisible(true);
+		     // Ação ao clicar no botão Consultar
+		        btnConsultar.addActionListener(new ActionListener() {
+		            public void actionPerformed(ActionEvent e) {
+		                try {
+		                    int ra = Integer.parseInt(txtRaConsulta.getText());
+		                    AlunoDAO alunoDao = new AlunoDAO();
+		                    Aluno aluno = alunoDao.consultar(ra);
+		                    
+		                    if (aluno != null) {
+		                        txtNomeAlterar.setText(aluno.getNomeAluno());
+		                    } else {
+		                        JOptionPane.showMessageDialog(alterarFrame, "Aluno não encontrado!");
+		                    }
+		                } catch (Exception ex) {
+		                    JOptionPane.showMessageDialog(alterarFrame, "Erro ao consultar o aluno: " + ex.getMessage());
+		                }
+		            }
+		        });
+		        
+		        // Ação ao clicar no botão Salvar Alterações
+		        btnSalvar.addActionListener(new ActionListener() {
+		            public void actionPerformed(ActionEvent e) {
+		                try {
+		                    int ra = Integer.parseInt(txtRaConsulta.getText());
+		                    AlunoDAO alunoDao = new AlunoDAO();
+		                    Aluno aluno = alunoDao.consultar(ra);
+		                    
+		                    if (aluno != null) {
+		                        aluno.setNomeAluno(txtNomeAlterar.getText());
+		                        alunoDao.atualizar(aluno);
+		                        JOptionPane.showMessageDialog(alterarFrame, "Dados do aluno alterados com sucesso!");
+		                    } else {
+		                        JOptionPane.showMessageDialog(alterarFrame, "Aluno não encontrado!");
+		                    }
+		                } catch (Exception ex) {
+		                    JOptionPane.showMessageDialog(alterarFrame, "Erro ao salvar as alterações: " + ex.getMessage());
+		                }
+		            }
+		        });
+			}
+		});
+		mnEditarAluno.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+		mnEditarAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuAluno.add(mnEditarAluno);
 		
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Salvar");
-		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-		mntmNewMenuItem_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnArquivo.add(mntmNewMenuItem_1);
+		JMenuItem mnSalvarAluno = new JMenuItem("Salvar");
+		mnSalvarAluno.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		mnSalvarAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuAluno.add(mnSalvarAluno);
 		
-		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Sair");
-		mntmNewMenuItem_2.addActionListener(new ActionListener() {
+		JMenuItem mnSairAluno = new JMenuItem("Sair");
+		mnSairAluno.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
 		});
-		mntmNewMenuItem_2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
-		mntmNewMenuItem_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnArquivo.add(mntmNewMenuItem_2);
+		
+		JMenuItem mnConsultar = new JMenuItem("Consultar");
+		mnConsultar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+		mnConsultar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuAluno.add(mnConsultar);
+		
+		JMenuItem mnExcluir = new JMenuItem("Excluir");
+		mnExcluir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
+		mnExcluir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuAluno.add(mnExcluir);
+		
+		JSeparator separator = new JSeparator();
+		menuAluno.add(separator);
+		mnSairAluno.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
+		mnSairAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuAluno.add(mnSairAluno);
 		
 		JMenu mnNewMenu = new JMenu("Ajudar");
 		mnNewMenu.addActionListener(new ActionListener() {
@@ -135,6 +219,39 @@ public class TelaPrincipal extends JFrame {
 				JOptionPane.showMessageDialog(null, "Informações do Menu");
 			}
 		});
+		
+		JMenu menuNotasFaltas = new JMenu("Notas e Faltas");
+		menuNotasFaltas.setForeground(new Color(0, 0, 0));
+		menuNotasFaltas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuBar.add(menuNotasFaltas);
+		
+		mnEditarNotas = new JMenuItem("Alterar");
+		mnEditarNotas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+		mnEditarNotas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuNotasFaltas.add(mnEditarNotas);
+		
+		JMenuItem mnSalvarNotas = new JMenuItem("Salvar");
+		mnSalvarNotas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		mnSalvarNotas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuNotasFaltas.add(mnSalvarNotas);
+		
+		JMenuItem mnConsultarNotas = new JMenuItem("Consultar");
+		mnConsultarNotas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+		mnConsultarNotas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuNotasFaltas.add(mnConsultarNotas);
+		
+		JMenuItem mnExcluirNotas = new JMenuItem("Excluir");
+		mnExcluirNotas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
+		mnExcluirNotas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuNotasFaltas.add(mnExcluirNotas);
+		
+		JSeparator separator_1 = new JSeparator();
+		menuNotasFaltas.add(separator_1);
+		
+		JMenuItem mnSairNotas = new JMenuItem("Sair");
+		mnSairNotas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
+		mnSairNotas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuNotasFaltas.add(mnSairNotas);
 		mnNewMenu.setForeground(new Color(0, 0, 0));
 		mnNewMenu.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuBar.add(mnNewMenu);
@@ -259,7 +376,6 @@ public class TelaPrincipal extends JFrame {
 		btnNovoCadastro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setAllFieldsEnabled(true);
-				txtRa.setText(null);
 				txtNome.setText(null);
 				txtEmail.setText(null);
 				txtDataNascimento.setText(null);
@@ -284,6 +400,63 @@ public class TelaPrincipal extends JFrame {
 		btnProximo.setBounds(654, 322, 119, 37);
 		dadosPessoais.add(btnProximo);
 		
+		JLabel lblMensagemAluno = new JLabel("");
+		lblMensagemAluno.setForeground(Color.BLACK);
+		lblMensagemAluno.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblMensagemAluno.setBounds(10, 389, 196, 21);
+		dadosPessoais.add(lblMensagemAluno);
+		
+		JButton btnBuscarAluno = new JButton("Consultar");
+		btnBuscarAluno.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setAllFieldsEnabled(true);
+				try {
+                    int ra = Integer.parseInt(txtRa.getText());
+                    AlunoDAO alunoDao = new AlunoDAO();
+                    Aluno aluno = alunoDao.consultar(ra);
+                    
+                    if (aluno != null) {
+                        txtNome.setText(aluno.getNomeAluno());
+                        txtEmail.setText(aluno.getEmailAluno());
+                        txtCpf.setText(aluno.getCpfAluno());
+                        txtDataNascimento.setText(aluno.getDataNascimento());
+                        txtEndereco.setText(aluno.getEnderecoAluno());
+                        txtMunicipio.setText(aluno.getMunicipioAluno());
+                        cmbBoxUf.setSelectedItem((String) aluno.getUfAluno());
+                        txtCelular.setText(aluno.getCelularAluno());
+                        
+                        CursoDAO cursoDao = new CursoDAO();
+                        Curso curso = cursoDao.consultar(aluno.getRaAluno());
+                        if(curso != null) {
+                        	cmbBoxCurso.setSelectedItem((String) curso.getCurso());
+                        	cmbBoxCampus.setSelectedItem((String) curso.getCampus());
+                        	
+        		            if (rdMatutino.isSelected()) {
+        		                rdMatutino.setText(curso.getPeriodo());
+        		            } else if (rdVespertino.isSelected()) {
+        		            	rdVespertino.setText(curso.getPeriodo());
+        		            } else if (rdNoturno.isSelected()) {
+        		            	rdNoturno.setText(curso.getPeriodo());
+        		            }
+                        	
+                        }
+                    } else {
+                        lblMensagemAluno.setText("Aluno não encontrado");
+                    }
+                } catch (Exception ex) {
+                	lblMensagemAluno.setText("Erro ao consultar");
+                }
+			}
+		});
+		btnBuscarAluno.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnBuscarAluno.setBounds(10, 331, 119, 37);
+		dadosPessoais.add(btnBuscarAluno);
+		
+		JButton btnAlterarDados = new JButton("Alterar");
+		btnAlterarDados.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnAlterarDados.setBounds(154, 331, 119, 37);
+		dadosPessoais.add(btnAlterarDados);
+				
 		//============================== CURSO ===================================//
 		JPanel dadosCurso = new JPanel();
 		tabbedPane.addTab("Curso\r\n", null, dadosCurso, null);
@@ -482,49 +655,7 @@ public class TelaPrincipal extends JFrame {
 		txtFaltas.setBounds(658, 182, 85, 29);
 		notasFaltas.add(txtFaltas);
 						
-		JButton btnBuscarRa = new JButton("Buscar");
-		btnBuscarRa.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					AlunoDAO alunoDao = new AlunoDAO();
-					int ra = Integer.parseInt(txtRaBusca.getText());
-					aluno = alunoDao.consultar(ra);
-					
-					lblAluno.setText(aluno.getNomeAluno());
-					//verifica se o aluno foi encontrado
-					if (aluno != null) {
-                        //mostra o aluno
-						lblAluno.setText(aluno.getNomeAluno());
-                        CursoDAO cursoDao = new CursoDAO();
-                        
-                        Curso curso = cursoDao.consultar(aluno.getRaAluno());
-                        
-                        if(curso != null) {
-                        	lblCursoAluno.setText(curso.getCurso());
-                        	
-                        	List<Disciplina> disciplinas = cursoDao.getDisciplinas(curso.getIdCurso());
-                        	cmbBoxDisciplina.removeAllItems();
-                        	
-                        	for(Disciplina disciplina : disciplinas) {
-                        		cmbBoxDisciplina.addItem(disciplina.getNomeDisciplina());
-                        	}
-                        }else {
-                        	lblCursoAluno.setText("Curso não encontrado");
-                        }
-                    } else {
-                        lblAluno.setText("Aluno não encontrado.");
-                        lblCursoAluno.setText("Curso não encontrado");
-                    }
-					
-		        } catch (Exception ex) {
-		            // Exibe outros erros no console ou em um label
-		            System.out.println("Erro: " + ex.getMessage());
-		        }
-			}
-		});
-		btnBuscarRa.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnBuscarRa.setBounds(379, 34, 85, 35);
-		notasFaltas.add(btnBuscarRa);
+		
 		
 		JLabel lblMensagemNotas = new JLabel("");
 		lblMensagemNotas.setForeground(Color.BLACK);
@@ -562,6 +693,7 @@ public class TelaPrincipal extends JFrame {
 			            notas.setIdDisciplina(idDisciplina);
 			            
 			            System.out.println("Tentando inserir notas com idDisciplina: " + notas.getIdDisciplina());
+			            
 			            if(notas.getNota() < 0 || notas.getNota() > 10) {
 			            	lblMensagemNotas.setText("Digite uma nota válida");
 			            }else {
@@ -621,6 +753,71 @@ public class TelaPrincipal extends JFrame {
 		btnCalcular.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnCalcular.setBounds(465, 247, 85, 35);
 		notasFaltas.add(btnCalcular);
+		
+		JButton btnBuscarRa = new JButton("Buscar");
+		btnBuscarRa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					AlunoDAO alunoDao = new AlunoDAO();
+					int ra = Integer.parseInt(txtRaBusca.getText());
+					aluno = alunoDao.consultar(ra);
+					
+					lblAluno.setText(aluno.getNomeAluno());
+					
+					//verifica se o aluno foi encontrado
+					if (aluno != null) {
+                        //mostra o aluno
+						lblAluno.setText(aluno.getNomeAluno());
+						
+                        CursoDAO cursoDao = new CursoDAO();
+                        Curso curso = cursoDao.consultar(aluno.getRaAluno());
+                        
+                        if(curso != null) {
+                        	lblCursoAluno.setText(curso.getCurso());
+                        	
+                        	List<Disciplina> disciplinas = cursoDao.getDisciplinas(curso.getIdCurso());
+                        	cmbBoxDisciplina.removeAllItems();
+                        	
+                        	for(Disciplina disciplina : disciplinas) {
+                        		cmbBoxDisciplina.addItem(disciplina.getNomeDisciplina());
+                        	}
+                        	
+                        	NotasDAO notasDao = new NotasDAO();
+                        	List<Notas> listaNotas = notasDao.consultar(aluno.getRaAluno());
+                        	
+                        	if(listaNotas != null && !listaNotas.isEmpty()) {
+                        		int somaNotas = 0;
+                        		for(Notas notas : listaNotas) {
+                        			cmbBoxSemestre.setSelectedItem(notas.getSemestre());
+                        			txtFaltas.setText(String.valueOf(notas.getFaltas()));
+                        			txtNota1.setText(String.valueOf(notas.getNota()));
+                        			txtNota2.setText(String.valueOf(notas.getNota2()));
+                        			lblMostrarMedia.setText(String.valueOf(notas.getMedia()));
+                        		}
+                        	}else {
+                        		cmbBoxSemestre.setSelectedIndex(-1);
+                                txtFaltas.setText("");
+                                txtNota1.setText("");
+                                txtNota2.setText("");
+                                lblMostrarMedia.setText("");
+                        	}
+                        }else {
+                        	lblCursoAluno.setText("Curso não encontrado");
+                        }
+                    } else {
+                        lblAluno.setText("Aluno não encontrado.");
+                        lblCursoAluno.setText("Curso não encontrado");
+                    }
+					
+		        } catch (Exception ex) {
+		            // Exibe outros erros no console ou em um label
+		            System.out.println("Erro: " + ex.getMessage());
+		        }
+			}
+		});
+		btnBuscarRa.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnBuscarRa.setBounds(379, 34, 85, 35);
+		notasFaltas.add(btnBuscarRa);
 		
 		//========================== BOLETIM =============================//
 		JPanel dadosBoletim = new JPanel();
@@ -686,6 +883,17 @@ public class TelaPrincipal extends JFrame {
 		faltasBoletim.setBounds(537, 227, 85, 26);
 		dadosBoletim.add(faltasBoletim);
 		
+		JLabel lblSituacao = new JLabel("Situação");
+		lblSituacao.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblSituacao.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+		lblSituacao.setBounds(647, 181, 85, 26);
+		dadosBoletim.add(lblSituacao);
+		
+		JLabel situacaoBoletim = new JLabel("");
+		situacaoBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		situacaoBoletim.setBounds(647, 227, 85, 26);
+		dadosBoletim.add(situacaoBoletim);
+		
 		JButton btnBuscarBoletim = new JButton("Buscar");
 		btnBuscarBoletim.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -713,13 +921,26 @@ public class TelaPrincipal extends JFrame {
 		                    
 		                    if (listaNotas != null && !listaNotas.isEmpty()) {
 		                        System.out.println("Notas encontradas: " + listaNotas.size());
+		                        int somaNotas = 0;
 		                        for (Notas notas : listaNotas) {
 		                            System.out.println("Disciplina: " + notas.getDisciplina() + ", Nota: " + notas.getNota() + ", Faltas: " + notas.getFaltas());
 		                  
 		                            disciplinaBoletim.setText(notas.getDisciplina() + "\n");
-		                            notasBoletim.setText(String.valueOf(notas.getNota()) + "\n");
+		                            notasBoletim.setText(String.valueOf(notas.getMedia()) + "\n");
 		                            faltasBoletim.setText(String.valueOf(notas.getFaltas()) + "\n");
+		                            
+		                            somaNotas += notas.getMedia();
 		                        }
+		                        
+		                        double mediaGeral = somaNotas / listaNotas.size();
+		                        String situacao = "";
+		                        
+		                        if(mediaGeral >= 6) {
+		                        	situacao = "Aprovado";
+		                        }else {
+		                        	situacao = "Reprovado";
+		                        }
+		                        situacaoBoletim.setText(situacao);
 		                    } else {
 		                        System.out.println("Nenhuma nota encontrada para o aluno.");
 		                        disciplinaBoletim.setText("Nenhuma nota encontrada.");
@@ -744,23 +965,11 @@ public class TelaPrincipal extends JFrame {
 		btnBuscarBoletim.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnBuscarBoletim.setBounds(363, 19, 85, 35);
 		dadosBoletim.add(btnBuscarBoletim);
-		
-		JLabel lblSituacao = new JLabel("Situação");
-		lblSituacao.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblSituacao.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
-		lblSituacao.setBounds(647, 181, 85, 26);
-		dadosBoletim.add(lblSituacao);
-		
-		JLabel situacaoBoletim = new JLabel("");
-		situacaoBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		situacaoBoletim.setBounds(647, 227, 85, 26);
-		dadosBoletim.add(situacaoBoletim);
-		
+						
 		setAllFieldsEnabled(false);
 	}
 	private void setAllFieldsEnabled(boolean enabled) {
 		txtNome.setEnabled(enabled);
-		txtRa.setEnabled(enabled);
 		txtEmail.setEnabled(enabled);
 		txtCpf.setEnabled(enabled);
 		txtDataNascimento.setEnabled(enabled);

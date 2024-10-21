@@ -109,12 +109,16 @@ public class AlunoDAO {
 	    return aluno; 
 	}
 
-	public void editar(Aluno aluno) throws Exception{
+	public void atualizar(Aluno aluno) throws Exception{
 		try {
 			if(aluno == null)
 				throw new Exception("O valor passado não pode ser nulo");
 			
-			String SQL = "UPDATE alunos SET nomeAluno=?,emailAluno=?,dataNascimento=?,enderecoAluno=?,celularAluno=?,municipioAluno=?,ufAluno=?,cpfAluno=?,curso=?,campus=?,periodo=? WHERE raAluno=?";
+			if (conn == null || conn.isClosed()) {
+	            conn = ConnectionFactory.getConnection(); // Abre uma nova conexão, se necessário
+	        }
+			
+			String SQL = "UPDATE alunos SET nomeAluno=?, emailAluno=?, dataNascimento=?, enderecoAluno=?, celularAluno=?, municipioAluno=?, ufAluno=?, cpfAluno=? WHERE raAluno=?";
 			ps = conn.prepareStatement(SQL);
 			ps.setString(1, aluno.getNomeAluno());
 			ps.setString(2, aluno.getEmailAluno());
@@ -124,9 +128,14 @@ public class AlunoDAO {
 			ps.setString(6, aluno.getMunicipioAluno());
 			ps.setString(7, aluno.getUfAluno());
 			ps.setString(8, aluno.getCpfAluno());
-			ps.executeUpdate();
-		}catch(Exception e) {
+			ps.setInt(9, aluno.getRaAluno());
+			// Executa a atualização
+	        ps.executeUpdate();
+
+		}catch(SQLException e) {
 			throw new Exception("Erro ao atualizar os dados " + e.getMessage());
-		}
+		}finally {
+	        ConnectionFactory.closeConnection(conn, ps, rs);
+	    }
 	}
 }

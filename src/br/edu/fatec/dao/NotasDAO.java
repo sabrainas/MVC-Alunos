@@ -115,7 +115,7 @@ public class NotasDAO {
 	    double media = soma / count; // Cálculo da média
 	    String situacao = media >= 6.0 ? "Aprovado" : "Reprovado";
 
-	    return String.format("%.2f %s", media, situacao); // Formata a saída
+	    return String.format("%.2f  -  %s", media, situacao); // Formata a saída
 	}
 
 
