@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.text.MaskFormatter;
 
 import br.edu.fatec.dao.AlunoDAO;
 import br.edu.fatec.dao.CursoDAO;
@@ -18,6 +19,8 @@ import br.edu.fatec.model.Notas;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -35,12 +38,18 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.ScrollPane;
 import java.awt.Scrollbar;
 import javax.swing.JSeparator;
+import javax.swing.JFormattedTextField;
+import java.awt.Panel;
+import java.awt.TextArea;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class TelaPrincipal extends JFrame {
 	
@@ -50,17 +59,18 @@ public class TelaPrincipal extends JFrame {
     private JTextField txtNome;
     private JTextField txtRa;
     private JTextField txtEmail;
-    private JTextField txtCpf;
-    private JTextField txtDataNascimento;
     private JTextField txtEndereco;
     private JTextField txtMunicipio;
-    private JTextField txtCelular;
     private JTextField txtRaBusca;
+    private JFormattedTextField formatedTxtCpf;
+    private JFormattedTextField formatedTxtCelular;
+    private JFormattedTextField formatedTxtDataNascimento;
     private JButton btnProximo;
     private JButton btnNovoCadastro;
     private JButton btnBuscar;
     private JButton btnSalvar;
     private JButton btnVoltar;
+    private JButton btnAlterarDados;
     private JComboBox<String> cmbBoxUf;
     private JComboBox<String> cmbBoxCurso;
     private JComboBox<String> cmbBoxCampus; 
@@ -83,6 +93,8 @@ public class TelaPrincipal extends JFrame {
     private JTextField txtRaBoletim;
     private JTextField txtNota2;
     private JMenuItem mnEditarNotas;
+    private JTable table;
+    private JTable tableBoletim;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -100,7 +112,7 @@ public class TelaPrincipal extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TelaPrincipal() {
+	public TelaPrincipal() throws Exception {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 816, 552);
 		
@@ -306,7 +318,7 @@ public class TelaPrincipal extends JFrame {
 		
 		JLabel lblEndereo = new JLabel("Endereço:");
 		lblEndereo.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblEndereo.setBounds(373, 189, 160, 17);
+		lblEndereo.setBounds(373, 189, 79, 17);
 		dadosPessoais.add(lblEndereo);
 		
 		txtRa = new JTextField();
@@ -320,24 +332,16 @@ public class TelaPrincipal extends JFrame {
 		txtEmail.setColumns(10);
 		txtEmail.setBounds(63, 101, 322, 37);
 		dadosPessoais.add(txtEmail);
-		
-		txtCpf = new JTextField();
-		txtCpf.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		txtCpf.setColumns(10);
-		txtCpf.setBounds(451, 101, 322, 37);
-		dadosPessoais.add(txtCpf);
-		
-		txtDataNascimento = new JTextField();
-		txtDataNascimento.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		txtDataNascimento.setColumns(10);
-		txtDataNascimento.setBounds(166, 179, 187, 37);
-		dadosPessoais.add(txtDataNascimento);
-		
+								
 		txtEndereco = new JTextField();
 		txtEndereco.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txtEndereco.setColumns(10);
 		txtEndereco.setBounds(451, 179, 322, 37);
 		dadosPessoais.add(txtEndereco);
+		
+		formatedTxtDataNascimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
+		formatedTxtDataNascimento.setBounds(166, 179, 195, 37);
+		dadosPessoais.add(formatedTxtDataNascimento);
 		
 		JLabel lblMunicpio = new JLabel("Município:");
 		lblMunicpio.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -366,30 +370,10 @@ public class TelaPrincipal extends JFrame {
 		lblCelular.setBounds(515, 263, 92, 17);
 		dadosPessoais.add(lblCelular);
 		
-		txtCelular = new JTextField();
-		txtCelular.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		txtCelular.setColumns(10);
-		txtCelular.setBounds(577, 254, 196, 37);
-		dadosPessoais.add(txtCelular);
-		
-		JButton btnNovoCadastro = new JButton("Novo Cadastro");
-		btnNovoCadastro.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setAllFieldsEnabled(true);
-				txtNome.setText(null);
-				txtEmail.setText(null);
-				txtDataNascimento.setText(null);
-				txtEndereco.setText(null);
-				txtCelular.setText(null);
-				txtCpf.setText(null);
-				txtMunicipio.setText(null);
-			}
-		});
-		
-		btnNovoCadastro.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnNovoCadastro.setBounds(515, 322, 119, 37);
-		dadosPessoais.add(btnNovoCadastro);
-		
+		formatedTxtCelular = new JFormattedTextField(new MaskFormatter("(##)#####-####"));
+		formatedTxtCelular.setBounds(578, 252, 195, 37);
+		dadosPessoais.add(formatedTxtCelular);
+				
 		btnProximo = new JButton("Próximo");
 		btnProximo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -403,14 +387,22 @@ public class TelaPrincipal extends JFrame {
 		JLabel lblMensagemAluno = new JLabel("");
 		lblMensagemAluno.setForeground(Color.BLACK);
 		lblMensagemAluno.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblMensagemAluno.setBounds(10, 389, 196, 21);
+		lblMensagemAluno.setBounds(10, 389, 288, 21);
 		dadosPessoais.add(lblMensagemAluno);
+		
+		formatedTxtCpf = new JFormattedTextField(new MaskFormatter("###.###.###-##"));
+		formatedTxtCpf.setBounds(451, 101, 322, 37);
+		dadosPessoais.add(formatedTxtCpf);
+		
 		
 		JButton btnBuscarAluno = new JButton("Consultar");
 		btnBuscarAluno.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				setAllFieldsEnabled(true);
+				
 				try {
+					
                     int ra = Integer.parseInt(txtRa.getText());
                     AlunoDAO alunoDao = new AlunoDAO();
                     Aluno aluno = alunoDao.consultar(ra);
@@ -418,12 +410,12 @@ public class TelaPrincipal extends JFrame {
                     if (aluno != null) {
                         txtNome.setText(aluno.getNomeAluno());
                         txtEmail.setText(aluno.getEmailAluno());
-                        txtCpf.setText(aluno.getCpfAluno());
-                        txtDataNascimento.setText(aluno.getDataNascimento());
+                        formatedTxtCpf.setText(aluno.getCpfAluno());
+                        formatedTxtDataNascimento.setText(aluno.getDataNascimento());
                         txtEndereco.setText(aluno.getEnderecoAluno());
                         txtMunicipio.setText(aluno.getMunicipioAluno());
                         cmbBoxUf.setSelectedItem((String) aluno.getUfAluno());
-                        txtCelular.setText(aluno.getCelularAluno());
+                        formatedTxtCelular.setText(aluno.getCelularAluno());
                         
                         CursoDAO cursoDao = new CursoDAO();
                         Curso curso = cursoDao.consultar(aluno.getRaAluno());
@@ -431,31 +423,105 @@ public class TelaPrincipal extends JFrame {
                         	cmbBoxCurso.setSelectedItem((String) curso.getCurso());
                         	cmbBoxCampus.setSelectedItem((String) curso.getCampus());
                         	
-        		            if (rdMatutino.isSelected()) {
-        		                rdMatutino.setText(curso.getPeriodo());
-        		            } else if (rdVespertino.isSelected()) {
-        		            	rdVespertino.setText(curso.getPeriodo());
-        		            } else if (rdNoturno.isSelected()) {
-        		            	rdNoturno.setText(curso.getPeriodo());
-        		            }
+                        	if (curso.getPeriodo().equals(rdMatutino.getText())) {
+                                rdMatutino.setSelected(true);
+                            } else if (curso.getPeriodo().equals(rdVespertino.getText())) {
+                                rdVespertino.setSelected(true);
+                            } else if (curso.getPeriodo().equals(rdNoturno.getText())) {
+                                rdNoturno.setSelected(true);
+                            }
                         	
                         }
+                        
                     } else {
                         lblMensagemAluno.setText("Aluno não encontrado");
                     }
                 } catch (Exception ex) {
                 	lblMensagemAluno.setText("Erro ao consultar");
                 }
+				
 			}
 		});
 		btnBuscarAluno.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnBuscarAluno.setBounds(10, 331, 119, 37);
+		btnBuscarAluno.setBounds(10, 322, 119, 37);
 		dadosPessoais.add(btnBuscarAluno);
 		
-		JButton btnAlterarDados = new JButton("Alterar");
+		btnAlterarDados = new JButton("Alterar");
+		btnAlterarDados.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					aluno = new Aluno();
+		            aluno.setRaAluno(Integer.parseInt(txtRa.getText()));
+		            aluno.setNomeAluno(txtNome.getText());
+		            aluno.setEmailAluno(txtEmail.getText());
+		            aluno.setDataNascimento(formatedTxtDataNascimento.getText());
+		            aluno.setEnderecoAluno(txtEndereco.getText());
+		            aluno.setCelularAluno(formatedTxtCelular.getText());
+		            aluno.setMunicipioAluno(txtMunicipio.getText());
+		            aluno.setUfAluno((String) cmbBoxUf.getSelectedItem());
+		            aluno.setCpfAluno(formatedTxtCpf.getText());
+                    
+		            AlunoDAO alunoDao = new AlunoDAO();
+		            alunoDao.atualizar(aluno);
+
+		            lblMensagemAluno.setText("Dados atualizados com sucesso!");
+                } catch (Exception ex) {
+                    lblMensagemAluno.setText("Erro ao atualizar os dados");
+                    System.out.println(ex.getMessage());
+                }
+			}
+		});
 		btnAlterarDados.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnAlterarDados.setBounds(154, 331, 119, 37);
+		btnAlterarDados.setBounds(155, 322, 119, 37);
 		dadosPessoais.add(btnAlterarDados);
+		
+		JButton btnExcluirAluno = new JButton("Excluir");
+		btnExcluirAluno.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        try {
+		            // Obtém o RA do campo de texto
+		            int raAluno = Integer.parseInt(txtRa.getText());
+		            
+		            // Consulta o aluno no banco de dados usando o RA
+		            AlunoDAO alunoDao = new AlunoDAO();
+		            Aluno aluno = alunoDao.consultar(raAluno); // Aqui você obtém o aluno
+		            
+		            // Verifica se o aluno foi encontrado
+		            if (aluno != null) {
+		                // Obtém o nome do aluno
+		                String nomeAluno = aluno.getNomeAluno();
+		                
+		                // Exibe um diálogo de confirmação com o nome do aluno
+		                int confirmarExclusao = JOptionPane.showConfirmDialog(null, 
+		                    "Tem certeza que deseja excluir o aluno " + nomeAluno + "?", 
+		                    "Confirmação da Exclusão", 
+		                    JOptionPane.YES_NO_OPTION);
+		                
+		                // Se o usuário confirmar a exclusão
+		                if (confirmarExclusao == JOptionPane.YES_OPTION) {
+		                    // Exclui o aluno
+		                    alunoDao.excluir(raAluno);
+		                    
+		                    // Exibe mensagem de sucesso
+		                    lblMensagemAluno.setText("Aluno " + nomeAluno + " excluído com sucesso!");
+		                } else {
+		                	lblMensagemAluno.setText("Exclusão do aluno " + nomeAluno + " cancelada.");
+		                }
+		            } else {
+		            	lblMensagemAluno.setText("Aluno com RA " + raAluno + " não encontrado.");
+		            }
+		        } catch (NumberFormatException nfe) {
+		        	lblMensagemAluno.setText("RA inválido");
+		            System.out.println("Erro ao converter RA: " + nfe.getMessage());
+		        } catch (Exception ex) {
+		        	lblMensagemAluno.setText("Erro ao excluir o aluno");
+		            System.out.println(ex.getMessage());
+		        }
+		    }
+		});
+		btnExcluirAluno.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnExcluirAluno.setBounds(300, 322, 119, 37);
+		dadosPessoais.add(btnExcluirAluno);
 				
 		//============================== CURSO ===================================//
 		JPanel dadosCurso = new JPanel();
@@ -508,8 +574,11 @@ public class TelaPrincipal extends JFrame {
 		grupoPeriodo.add(rdMatutino);
 		grupoPeriodo.add(rdVespertino);
 		grupoPeriodo.add(rdNoturno);
-
+		
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnSalvar.setBounds(612, 282, 85, 35);
+		dadosCurso.add(btnSalvar);
 		btnSalvar.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        try {
@@ -541,12 +610,12 @@ public class TelaPrincipal extends JFrame {
 		            aluno.setRaAluno(Integer.parseInt(txtRa.getText()));
 		            aluno.setNomeAluno(txtNome.getText());
 		            aluno.setEmailAluno(txtEmail.getText());
-		            aluno.setDataNascimento(txtDataNascimento.getText());
+		            aluno.setDataNascimento(formatedTxtDataNascimento.getText());
 		            aluno.setEnderecoAluno(txtEndereco.getText());
-		            aluno.setCelularAluno(txtCelular.getText());
+		            aluno.setCelularAluno(formatedTxtCelular.getText());
 		            aluno.setMunicipioAluno(txtMunicipio.getText());
 		            aluno.setUfAluno((String) cmbBoxUf.getSelectedItem());
-		            aluno.setCpfAluno(txtCpf.getText());
+		            aluno.setCpfAluno(formatedTxtCpf.getText());
 
 		            // Salvar o aluno associado ao curso
 		            AlunoDAO alunoDao = new AlunoDAO();
@@ -560,10 +629,28 @@ public class TelaPrincipal extends JFrame {
 		        }
 		    }
 		});
-		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnSalvar.setBounds(612, 282, 85, 35);
-		dadosCurso.add(btnSalvar);
 		
+		JButton btnNovoCadastro = new JButton("Novo Cadastro");
+		btnNovoCadastro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setAllFieldsEnabled(true);
+				txtRa.setText(null);
+				txtNome.setText(null);
+				txtEmail.setText(null);
+				formatedTxtDataNascimento.setText(null);
+				txtEndereco.setText(null);
+				formatedTxtCelular.setText(null);
+				formatedTxtCpf.setText(null);
+				cmbBoxUf.setSelectedIndex(-1);
+				txtMunicipio.setText(null);
+				cmbBoxCurso.setSelectedIndex(-1);
+				cmbBoxCampus.setSelectedIndex(-1);
+			}
+		});
+		btnNovoCadastro.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnNovoCadastro.setBounds(515, 322, 119, 37);
+		dadosPessoais.add(btnNovoCadastro);
+								
 		lblMensagem = new JLabel("");
 		lblMensagem.setForeground(new Color(0, 0, 0));
 		lblMensagem.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -579,6 +666,8 @@ public class TelaPrincipal extends JFrame {
 		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnVoltar.setBounds(72, 282, 85, 35);
 		dadosCurso.add(btnVoltar);
+		
+
 		
 		//=================== NOTAS E FALTAS ===================//
 		JPanel notasFaltas = new JPanel();
@@ -810,7 +899,7 @@ public class TelaPrincipal extends JFrame {
                     }
 					
 		        } catch (Exception ex) {
-		            // Exibe outros erros no console ou em um label
+		            
 		            System.out.println("Erro: " + ex.getMessage());
 		        }
 			}
@@ -818,6 +907,61 @@ public class TelaPrincipal extends JFrame {
 		btnBuscarRa.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnBuscarRa.setBounds(379, 34, 85, 35);
 		notasFaltas.add(btnBuscarRa);
+		
+		cmbBoxDisciplina.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        try {
+		            String disciplinaSelecionada = (String) cmbBoxDisciplina.getSelectedItem();
+		            NotasDAO notasDao = new NotasDAO();
+		            
+		            Notas notas = notasDao.consultarNotasPorDisciplina(aluno.getRaAluno(), disciplinaSelecionada);
+		            
+		            if (notas != null) {
+		                txtFaltas.setText(String.valueOf(notas.getFaltas()));
+		                txtNota1.setText(String.valueOf(notas.getNota()));
+		                txtNota2.setText(String.valueOf(notas.getNota2()));
+		                lblMostrarMedia.setText(String.valueOf(notas.getMedia()));
+		                cmbBoxSemestre.setSelectedItem(notas.getSemestre());
+		            } else {
+		                txtFaltas.setText("");
+		                txtNota1.setText("");
+		                txtNota2.setText("");
+		                lblMostrarMedia.setText("");
+		                cmbBoxSemestre.setSelectedIndex(-1);
+		            }
+		        } catch (Exception ex) {
+		            System.out.println("Erro: " + ex.getMessage());
+		        }
+		    }
+		});
+		
+		JButton btnExcluirNotas = new JButton("Excluir");
+		btnExcluirNotas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+					AlunoDAO alunoDao = new AlunoDAO();
+					int raAluno = Integer.parseInt(txtRaBusca.getText());
+					List<Notas> listaNotas = notasDao.consultar(raAluno);
+					
+					if(listaNotas != null && !listaNotas.isEmpty()) {
+						for(Notas nota : listaNotas) {
+							notasDao.excluir(nota);
+						}
+						lblMensagemNotas.setText("Notas Excluídas com sucesso!");
+					}else {
+						lblMensagemNotas.setText("Nehuma nota encontrada para excluir");
+					}
+				}catch(Exception ex) {
+					lblMensagemNotas.setText("Erro ao excluir notas");
+					System.out.println(ex.getMessage());
+				}
+				
+				
+			}
+		});
+		btnExcluirNotas.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnExcluirNotas.setBounds(554, 309, 85, 35);
+		notasFaltas.add(btnExcluirNotas);
 		
 		//========================== BOLETIM =============================//
 		JPanel dadosBoletim = new JPanel();
@@ -850,49 +994,27 @@ public class TelaPrincipal extends JFrame {
 		lblCursoBoletim.setBounds(10, 135, 371, 26);
 		dadosBoletim.add(lblCursoBoletim);
 		
-		JLabel lblDisciplinaBoletim = new JLabel("Disciplinas");
-		lblDisciplinaBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblDisciplinaBoletim.setBounds(37, 181, 371, 26);
-		lblDisciplinaBoletim.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
-		dadosBoletim.add(lblDisciplinaBoletim);
-		
-		JLabel lblNotaBoletim = new JLabel("Notas");
-		lblNotaBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblNotaBoletim.setBounds(430, 181, 85, 26);
-		lblNotaBoletim.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
-		dadosBoletim.add(lblNotaBoletim);
-		
-		JLabel lblFaltaBoletim = new JLabel("Faltas");
-		lblFaltaBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblFaltaBoletim.setBounds(537, 181, 85, 26);
-		lblFaltaBoletim.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
-		dadosBoletim.add(lblFaltaBoletim);
-		
-		JLabel disciplinaBoletim = new JLabel("");
-		disciplinaBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		disciplinaBoletim.setBounds(37, 227, 371, 26);
-		dadosBoletim.add(disciplinaBoletim);
-		
-		JLabel notasBoletim = new JLabel("");
-		notasBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		notasBoletim.setBounds(430, 227, 85, 26);
-		dadosBoletim.add(notasBoletim);
-		
-		JLabel faltasBoletim = new JLabel("");
-		faltasBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		faltasBoletim.setBounds(537, 227, 85, 26);
-		dadosBoletim.add(faltasBoletim);
-		
-		JLabel lblSituacao = new JLabel("Situação");
-		lblSituacao.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblSituacao.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
-		lblSituacao.setBounds(647, 181, 85, 26);
-		dadosBoletim.add(lblSituacao);
-		
-		JLabel situacaoBoletim = new JLabel("");
-		situacaoBoletim.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		situacaoBoletim.setBounds(647, 227, 85, 26);
-		dadosBoletim.add(situacaoBoletim);
+		tableBoletim = new JTable();
+		tableBoletim.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		tableBoletim.setSurrendersFocusOnKeystroke(true);
+		tableBoletim.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+			},
+			new String[] {
+				"Disciplina", "Média", "Faltas", "Situação"
+			}
+		));
+		tableBoletim.getColumnModel().getColumn(0).setPreferredWidth(143);
+		tableBoletim.getColumnModel().getColumn(1).setPreferredWidth(80);
+		tableBoletim.getColumnModel().getColumn(2).setPreferredWidth(80);
+		tableBoletim.getColumnModel().getColumn(3).setPreferredWidth(80);
+		tableBoletim.setRowHeight(30);
+		JScrollPane scrollPane = new JScrollPane(tableBoletim);
+		scrollPane.setBounds(37, 246, 682, 120); // Define a altura do JScrollPane
+		dadosBoletim.add(scrollPane);
 		
 		JButton btnBuscarBoletim = new JButton("Buscar");
 		btnBuscarBoletim.addActionListener(new ActionListener() {
@@ -903,7 +1025,8 @@ public class TelaPrincipal extends JFrame {
 		            aluno = alunoDao.consultar(ra);
 		            
 		            lblNomeAluno.setText(aluno.getNomeAluno());
-		            // verifica se o aluno foi encontrado
+
+		            // Verifica se o aluno foi encontrado
 		            if (aluno != null) {
 		                System.out.println("Aluno encontrado: " + aluno.getNomeAluno());
 		                lblNomeAluno.setText("Aluno: " + aluno.getNomeAluno());
@@ -919,34 +1042,36 @@ public class TelaPrincipal extends JFrame {
 		                    NotasDAO notasDao = new NotasDAO();
 		                    List<Notas> listaNotas = notasDao.consultar(aluno.getRaAluno());
 		                    
+		                    DefaultTableModel tableModel = (DefaultTableModel) tableBoletim.getModel();
+		                    tableModel.setRowCount(0);
+		                    
+		                    int somaNotas = 0;
+
 		                    if (listaNotas != null && !listaNotas.isEmpty()) {
 		                        System.out.println("Notas encontradas: " + listaNotas.size());
-		                        int somaNotas = 0;
+
 		                        for (Notas notas : listaNotas) {
+		                        	String disciplina = notas.getDisciplina();
 		                            System.out.println("Disciplina: " + notas.getDisciplina() + ", Nota: " + notas.getNota() + ", Faltas: " + notas.getFaltas());
-		                  
-		                            disciplinaBoletim.setText(notas.getDisciplina() + "\n");
-		                            notasBoletim.setText(String.valueOf(notas.getMedia()) + "\n");
-		                            faltasBoletim.setText(String.valueOf(notas.getFaltas()) + "\n");
 		                            
+		                            String situacao = notas.getMedia() >= 6 ? "Aprovado" : "Reprovado";
+		                            
+		                            tableModel.addRow(new Object[] {
+		                            		disciplina,
+		                            		notas.getMedia(),
+		                            		notas.getFaltas(),
+		                            		situacao
+		                            });
 		                            somaNotas += notas.getMedia();
 		                        }
-		                        
-		                        double mediaGeral = somaNotas / listaNotas.size();
-		                        String situacao = "";
-		                        
-		                        if(mediaGeral >= 6) {
-		                        	situacao = "Aprovado";
-		                        }else {
-		                        	situacao = "Reprovado";
-		                        }
-		                        situacaoBoletim.setText(situacao);
+		                        System.out.println("Table Model Row Count: " + tableModel.getRowCount());
+
 		                    } else {
 		                        System.out.println("Nenhuma nota encontrada para o aluno.");
-		                        disciplinaBoletim.setText("Nenhuma nota encontrada.");
-		                        notasBoletim.setText("Nenhuma nota encontrada.");
-		                        faltasBoletim.setText("Nenhuma falta encontrada.");
+		                        tableModel.addRow(new Object[]{"Nenhuma nota encontrada.", "", "", ""});
 		                    }
+
+		                    
 		                } else {
 		                    lblCursoAluno.setText("Curso não encontrado");
 		                }
@@ -959,24 +1084,28 @@ public class TelaPrincipal extends JFrame {
 		            System.out.println("Erro: " + ex.getMessage());
 		            ex.printStackTrace();
 		        }
+
+			    dadosBoletim.revalidate();
+			    dadosBoletim.repaint();
 		    }
 		});
 
 		btnBuscarBoletim.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnBuscarBoletim.setBounds(363, 19, 85, 35);
 		dadosBoletim.add(btnBuscarBoletim);
-						
+			
+		
 		setAllFieldsEnabled(false);
 	}
 	private void setAllFieldsEnabled(boolean enabled) {
 		txtNome.setEnabled(enabled);
 		txtEmail.setEnabled(enabled);
-		txtCpf.setEnabled(enabled);
-		txtDataNascimento.setEnabled(enabled);
+		formatedTxtDataNascimento.setEnabled(enabled);
 		txtEndereco.setEnabled(enabled);
 		txtMunicipio.setEnabled(enabled);
-		txtCelular.setEnabled(enabled);
+		formatedTxtCelular.setEnabled(enabled);
 		cmbBoxUf.setEnabled(enabled);
+		formatedTxtCpf.setEnabled(enabled);
 		cmbBoxCurso.setEnabled(enabled);
 		cmbBoxCampus.setEnabled(enabled);
 		rdMatutino.setEnabled(enabled);
@@ -985,5 +1114,6 @@ public class TelaPrincipal extends JFrame {
 		btnProximo.setEnabled(enabled);
 		btnVoltar.setEnabled(enabled);
 		btnSalvar.setEnabled(enabled);
+		btnAlterarDados.setEnabled(enabled);
 	}
 }

@@ -42,9 +42,10 @@ public class NotasDAO {
 	}
 	//============================= UPDATE ============================//
 	public void salvar(Notas notas) throws Exception {
-		if(notas == null)
-			throw new Exception("O valor passado não pode ser nulo");
-	    
+	    if (notas == null) {
+	        throw new Exception("O valor passado não pode ser nulo");
+	    }
+
 	    String checkDisciplinaSQL = "SELECT idDisciplina FROM disciplinas WHERE idDisciplina = ?";
 	    try (PreparedStatement psCheck = this.conn.prepareStatement(checkDisciplinaSQL)) {
 	        psCheck.setInt(1, notas.getIdDisciplina());
@@ -54,22 +55,100 @@ public class NotasDAO {
 	        }
 	    }
 
-	    String SQL = "INSERT INTO notas(idNotas, disciplina, semestre, nota, nota2, media, faltas, raAluno, idDisciplina) VALUES(?,?,?,?,?,?,?,?,?)";
-	    try (PreparedStatement ps = this.conn.prepareStatement(SQL)) {
-	    	ps.setInt(1, notas.getIdNota());
-	        ps.setString(2, notas.getDisciplina());
-	        ps.setString(3, notas.getSemestre());
-	        ps.setDouble(4, notas.getNota() != null ? notas.getNota() : 0.0);
-	        ps.setDouble(5, notas.getNota2() != null ? notas.getNota2() : 0.0);
-	        ps.setDouble(6, notas.getMedia() != null ? notas.getMedia() : 0.0); 
-	        ps.setInt(7, notas.getFaltas());
-	        ps.setInt(8, notas.getRaAluno());
-	        ps.setInt(9, notas.getIdDisciplina());
-	        ps.executeUpdate();
-	    } catch (SQLException sqle) {
-	        throw new Exception("Erro ao inserir dados: " + sqle.getMessage(), sqle);
+	    // Verifica se a nota já existe
+	    if (notasExistem(notas.getRaAluno(), notas.getIdDisciplina())) {
+	        // Atualiza a nota existente
+	        String updateSQL = "UPDATE notas SET disciplina = ?, semestre = ?, nota = ?, nota2 = ?, media = ?, faltas = ? WHERE raAluno = ? AND idDisciplina = ?";
+	        try (PreparedStatement psUpdate = this.conn.prepareStatement(updateSQL)) {
+	            psUpdate.setString(1, notas.getDisciplina());
+	            psUpdate.setString(2, notas.getSemestre());
+	            psUpdate.setDouble(3, notas.getNota() != null ? notas.getNota() : 0.0);
+	            psUpdate.setDouble(4, notas.getNota2() != null ? notas.getNota2() : 0.0);
+	            psUpdate.setDouble(5, notas.getMedia() != null ? notas.getMedia() : 0.0);
+	            psUpdate.setInt(6, notas.getFaltas());
+	            psUpdate.setInt(7, notas.getRaAluno());
+	            psUpdate.setInt(8, notas.getIdDisciplina());
+	            psUpdate.executeUpdate();
+	        } catch (SQLException sqle) {
+	            throw new Exception("Erro ao atualizar dados: " + sqle.getMessage(), sqle);
+	        }
+	    } else {
+	        // Insere a nova nota
+	        String insertSQL = "INSERT INTO notas(idNotas, disciplina, semestre, nota, nota2, media, faltas, raAluno, idDisciplina) VALUES(?,?,?,?,?,?,?,?,?)";
+	        try (PreparedStatement psInsert = this.conn.prepareStatement(insertSQL)) {
+	            psInsert.setInt(1, notas.getIdNota());
+	            psInsert.setString(2, notas.getDisciplina());
+	            psInsert.setString(3, notas.getSemestre());
+	            psInsert.setDouble(4, notas.getNota() != null ? notas.getNota() : 0.0);
+	            psInsert.setDouble(5, notas.getNota2() != null ? notas.getNota2() : 0.0);
+	            psInsert.setDouble(6, notas.getMedia() != null ? notas.getMedia() : 0.0);
+	            psInsert.setInt(7, notas.getFaltas());
+	            psInsert.setInt(8, notas.getRaAluno());
+	            psInsert.setInt(9, notas.getIdDisciplina());
+	            psInsert.executeUpdate();
+	        } catch (SQLException sqle) {
+	            throw new Exception("Erro ao inserir dados: " + sqle.getMessage(), sqle);
+	        }
 	    }
 	}
+
+	private boolean notasExistem(int raAluno, int idDisciplina) throws SQLException {
+	    String SQL = "SELECT COUNT(*) FROM notas WHERE raAluno = ? AND idDisciplina = ?";
+	    conn = this.conn;
+	    ps = conn.prepareStatement(SQL);
+	    ps.setInt(1, raAluno);
+	    ps.setInt(2, idDisciplina);
+	    ResultSet rs = ps.executeQuery();
+	    if (rs.next()) {
+	        return rs.getInt(1) > 0;
+	    }
+	    return false;
+	}
+	public Notas consultarNotasPorDisciplina(int raAluno, String nomeDisciplina) throws Exception {
+	    Notas notas = null;
+	    Connection connection = null;
+	    PreparedStatement stmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        
+	        connection = ConnectionFactory.getConnection(); 
+
+	        
+	        String sql = "SELECT * FROM notas WHERE raAluno = ? AND disciplina = ?";
+	        stmt = connection.prepareStatement(sql);
+	        stmt.setInt(1, raAluno);
+	        stmt.setString(2, nomeDisciplina);
+
+	        rs = stmt.executeQuery();
+
+	        if (rs.next()) {
+	            // Criar um objeto Notas com os dados do ResultSet
+	            notas = new Notas();
+	            notas.setRaAluno(rs.getInt("raAluno"));
+	            notas.setDisciplina(rs.getString("disciplina"));
+	            notas.setNota(rs.getFloat("nota"));
+	            notas.setNota2(rs.getFloat("nota2"));
+	            notas.setFaltas(rs.getInt("faltas"));
+	            notas.setSemestre(rs.getString("semestre"));
+	            notas.setMedia(rs.getFloat("media"));
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Erro ao consultar notas: " + e.getMessage());
+	    } finally {
+	        // Fechar recursos
+	        try {
+	            if (rs != null) rs.close();
+	            if (stmt != null) stmt.close();
+	            if (connection != null) connection.close();
+	        } catch (SQLException e) {
+	            System.out.println("Erro ao fechar recursos: " + e.getMessage());
+	        }
+	    }
+
+	    return notas;
+	}
+
 	//================================ DELETE ======================================//
 	public void excluir(Notas notas) throws Exception{
 		if(notas == null)
