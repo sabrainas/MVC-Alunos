@@ -83,18 +83,18 @@ public class TelaPrincipal extends JFrame {
     private JLabel lblCursoAluno;
     private JTextField txtNota1;
     private JTextField txtFaltas;
-    //============================================//
+    private JTextField txtRaBoletim;
+    private JTextField txtNota2;
+    private JMenuItem mnEditarNotas;
+    private JTable table;
+    private JTable tableBoletim;
+    //====================	CLASSES ========================//
     private Aluno aluno;
     private AlunoDAO alunoDao;
     private Curso curso;
     private CursoDAO cursoDao;
     private Notas notas;
     private NotasDAO notasDao;
-    private JTextField txtRaBoletim;
-    private JTextField txtNota2;
-    private JMenuItem mnEditarNotas;
-    private JTable table;
-    private JTable tableBoletim;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -109,14 +109,13 @@ public class TelaPrincipal extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public TelaPrincipal() throws Exception {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 816, 552);
 		
 		//============================ DADOS PESSOAIS ===============================//
+		
+		//INSTANCIANDO COMPONENTES DO FORMULARIO 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
@@ -126,88 +125,9 @@ public class TelaPrincipal extends JFrame {
 		menuBar.add(menuAluno);
 		
 		JMenuItem mnEditarAluno = new JMenuItem("Alterar");
-		mnEditarAluno.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				JFrame alterarFrame = new JFrame("Alterar Aluno");
-				alterarFrame.setSize(400, 300);
-		     
-		        JLabel lblRa = new JLabel("RA do Aluno:");
-		        JTextField txtRaConsulta = new JTextField();
-		        JButton btnConsultar = new JButton("Consultar");
-
-		        JLabel lblNome = new JLabel("Nome:");
-		        JTextField txtNomeAlterar = new JTextField();
-
-		        JButton btnSalvar = new JButton("Salvar Alterações");
-
-		        
-		        alterarFrame.getContentPane().add(lblRa);
-		        alterarFrame.getContentPane().add(txtRaConsulta);
-		        alterarFrame.getContentPane().add(new JLabel()); 
-		        alterarFrame.getContentPane().add(btnConsultar);
-		        alterarFrame.getContentPane().add(lblNome);
-		        alterarFrame.getContentPane().add(txtNomeAlterar);
-		        alterarFrame.getContentPane().add(new JLabel()); 
-		        alterarFrame.getContentPane().add(btnSalvar);
-
-		        alterarFrame.setVisible(true);
-		     // Ação ao clicar no botão Consultar
-		        btnConsultar.addActionListener(new ActionListener() {
-		            public void actionPerformed(ActionEvent e) {
-		                try {
-		                    int ra = Integer.parseInt(txtRaConsulta.getText());
-		                    AlunoDAO alunoDao = new AlunoDAO();
-		                    Aluno aluno = alunoDao.consultar(ra);
-		                    
-		                    if (aluno != null) {
-		                        txtNomeAlterar.setText(aluno.getNomeAluno());
-		                    } else {
-		                        JOptionPane.showMessageDialog(alterarFrame, "Aluno não encontrado!");
-		                    }
-		                } catch (Exception ex) {
-		                    JOptionPane.showMessageDialog(alterarFrame, "Erro ao consultar o aluno: " + ex.getMessage());
-		                }
-		            }
-		        });
-		        
-		        // Ação ao clicar no botão Salvar Alterações
-		        btnSalvar.addActionListener(new ActionListener() {
-		            public void actionPerformed(ActionEvent e) {
-		                try {
-		                    int ra = Integer.parseInt(txtRaConsulta.getText());
-		                    AlunoDAO alunoDao = new AlunoDAO();
-		                    Aluno aluno = alunoDao.consultar(ra);
-		                    
-		                    if (aluno != null) {
-		                        aluno.setNomeAluno(txtNomeAlterar.getText());
-		                        alunoDao.atualizar(aluno);
-		                        JOptionPane.showMessageDialog(alterarFrame, "Dados do aluno alterados com sucesso!");
-		                    } else {
-		                        JOptionPane.showMessageDialog(alterarFrame, "Aluno não encontrado!");
-		                    }
-		                } catch (Exception ex) {
-		                    JOptionPane.showMessageDialog(alterarFrame, "Erro ao salvar as alterações: " + ex.getMessage());
-		                }
-		            }
-		        });
-			}
-		});
 		mnEditarAluno.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
 		mnEditarAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuAluno.add(mnEditarAluno);
-		
-		JMenuItem mnSalvarAluno = new JMenuItem("Salvar");
-		mnSalvarAluno.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-		mnSalvarAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		menuAluno.add(mnSalvarAluno);
-		
-		JMenuItem mnSairAluno = new JMenuItem("Sair");
-		mnSairAluno.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
 		
 		JMenuItem mnConsultar = new JMenuItem("Consultar");
 		mnConsultar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
@@ -219,11 +139,127 @@ public class TelaPrincipal extends JFrame {
 		mnExcluir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuAluno.add(mnExcluir);
 		
+		JMenuItem mnSairAluno = new JMenuItem("Sair");
 		JSeparator separator = new JSeparator();
 		menuAluno.add(separator);
 		mnSairAluno.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
 		mnSairAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuAluno.add(mnSairAluno);
+		
+		// BOTÃO MENU SALVAR ALUNO
+		JMenuItem mnSalvarAluno = new JMenuItem("Salvar");
+		mnSalvarAluno.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+		            // Verifica se os campos obrigatórios estão preenchidos
+		            if (txtRa.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo RA é obrigatório.");
+		                return; 
+		            }
+		            if (txtNome.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Nome é obrigatório.");
+		                return;
+		            }
+		            if (txtEmail.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Email é obrigatório.");
+		                return;
+		            }
+		            if (formatedTxtDataNascimento.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Data de Nascimento é obrigatório.");
+		                return;
+		            }
+		            if (txtEndereco.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Endereço é obrigatório.");
+		                return;
+		            }
+		            if (formatedTxtCelular.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Celular é obrigatório.");
+		                return;
+		            }
+		            if (txtMunicipio.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Município é obrigatório.");
+		                return;
+		            }
+		            if (cmbBoxUf.getSelectedItem() == null || ((String) cmbBoxUf.getSelectedItem()).trim().isEmpty()) {
+		            	lblMensagem.setText("O campo UF é obrigatório.");
+		                return;
+		            }
+		            if (formatedTxtCpf.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo CPF é obrigatório.");
+		                return;
+		            }
+		            if(cmbBoxCurso.getSelectedItem() == null || ((String) cmbBoxCurso.getSelectedItem()).trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Curso é obrigatório");
+		            	return;
+		            }
+		            if(cmbBoxCampus.getSelectedItem() == null || ((String) cmbBoxCampus.getSelectedItem()).trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Campus é obrigatório");
+		            	return;
+		            }
+		            String periodo = null;
+		            if (!rdMatutino.isSelected() && !rdVespertino.isSelected() && !rdNoturno.isSelected()) {
+		                lblMensagem.setText("O campo Período é obrigatório");
+		                return;
+		            } 
+		        	//inicializa o DAO para realizar a consulta
+		        	CursoDAO cursoDao = new CursoDAO();
+		            // cria o objeto para pegar os dados da tela
+		            aluno = new Aluno();
+		            		            	            
+		            // Defina os valores para o curso antes de salvá-lo
+		            String nomeCurso = (String) cmbBoxCurso.getSelectedItem();
+		            String campus = (String) cmbBoxCampus.getSelectedItem();
+		            
+		            if (rdMatutino.isSelected()) {
+		                periodo = rdMatutino.getText();
+		            } else if (rdVespertino.isSelected()) {
+		                periodo = rdVespertino.getText();
+		            } else if (rdNoturno.isSelected()) {
+		                periodo = rdNoturno.getText();
+		            }
+		            
+		            Curso curso = cursoDao.consultar(nomeCurso, campus, periodo);
+
+		            if(curso == null) {
+		            	lblMensagem.setText("Curso não encontrado");
+		            	return;
+		            }
+		            
+		            // Defina os valores para o aluno
+		            aluno.setRaAluno(Integer.parseInt(txtRa.getText()));
+		            aluno.setNomeAluno(txtNome.getText());
+		            aluno.setEmailAluno(txtEmail.getText());
+		            aluno.setDataNascimento(formatedTxtDataNascimento.getText());
+		            aluno.setEnderecoAluno(txtEndereco.getText());
+		            aluno.setCelularAluno(formatedTxtCelular.getText());
+		            aluno.setMunicipioAluno(txtMunicipio.getText());
+		            aluno.setUfAluno((String) cmbBoxUf.getSelectedItem());
+		            aluno.setCpfAluno(formatedTxtCpf.getText());
+
+		            // Salvar o aluno associado ao curso
+		            AlunoDAO alunoDao = new AlunoDAO();
+		            alunoDao.salvar(aluno, curso.getIdCurso());
+
+		            lblMensagem.setText("Salvo com Sucesso!");
+
+		        } catch (Exception el) {
+		            lblMensagem.setText("Erro ao salvar");
+		            System.out.println(el.getMessage());
+		        }
+			}
+		});
+		mnSalvarAluno.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		mnSalvarAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuAluno.add(mnSalvarAluno);
+		
+		//MENU SAIR
+		
+		mnSairAluno.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		
 		
 		JMenu mnNewMenu = new JMenu("Ajudar");
 		mnNewMenu.addActionListener(new ActionListener() {
@@ -238,32 +274,27 @@ public class TelaPrincipal extends JFrame {
 		menuBar.add(menuNotasFaltas);
 		
 		mnEditarNotas = new JMenuItem("Alterar");
-		mnEditarNotas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+
 		mnEditarNotas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuNotasFaltas.add(mnEditarNotas);
 		
 		JMenuItem mnSalvarNotas = new JMenuItem("Salvar");
-		mnSalvarNotas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		mnSalvarNotas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		mnSalvarNotas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuNotasFaltas.add(mnSalvarNotas);
 		
 		JMenuItem mnConsultarNotas = new JMenuItem("Consultar");
-		mnConsultarNotas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+		
 		mnConsultarNotas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuNotasFaltas.add(mnConsultarNotas);
 		
 		JMenuItem mnExcluirNotas = new JMenuItem("Excluir");
-		mnExcluirNotas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
+
 		mnExcluirNotas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuNotasFaltas.add(mnExcluirNotas);
-		
-		JSeparator separator_1 = new JSeparator();
-		menuNotasFaltas.add(separator_1);
-		
-		JMenuItem mnSairNotas = new JMenuItem("Sair");
-		mnSairNotas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
-		mnSairNotas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		menuNotasFaltas.add(mnSairNotas);
 		mnNewMenu.setForeground(new Color(0, 0, 0));
 		mnNewMenu.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuBar.add(mnNewMenu);
@@ -387,7 +418,7 @@ public class TelaPrincipal extends JFrame {
 		JLabel lblMensagemAluno = new JLabel("");
 		lblMensagemAluno.setForeground(Color.BLACK);
 		lblMensagemAluno.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblMensagemAluno.setBounds(10, 389, 288, 21);
+		lblMensagemAluno.setBounds(10, 389, 624, 21);
 		dadosPessoais.add(lblMensagemAluno);
 		
 		formatedTxtCpf = new JFormattedTextField(new MaskFormatter("###.###.###-##"));
@@ -446,6 +477,95 @@ public class TelaPrincipal extends JFrame {
 		btnBuscarAluno.setBounds(10, 322, 119, 37);
 		dadosPessoais.add(btnBuscarAluno);
 		
+		mnConsultar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setAllFieldsEnabled(true);
+				
+				try {
+					
+                    int ra = Integer.parseInt(txtRa.getText());
+                    AlunoDAO alunoDao = new AlunoDAO();
+                    Aluno aluno = alunoDao.consultar(ra);
+                    
+                    if (aluno != null) {
+                        txtNome.setText(aluno.getNomeAluno());
+                        txtEmail.setText(aluno.getEmailAluno());
+                        formatedTxtCpf.setText(aluno.getCpfAluno());
+                        formatedTxtDataNascimento.setText(aluno.getDataNascimento());
+                        txtEndereco.setText(aluno.getEnderecoAluno());
+                        txtMunicipio.setText(aluno.getMunicipioAluno());
+                        cmbBoxUf.setSelectedItem((String) aluno.getUfAluno());
+                        formatedTxtCelular.setText(aluno.getCelularAluno());
+                        
+                        CursoDAO cursoDao = new CursoDAO();
+                        Curso curso = cursoDao.consultar(aluno.getRaAluno());
+                        if(curso != null) {
+                        	cmbBoxCurso.setSelectedItem((String) curso.getCurso());
+                        	cmbBoxCampus.setSelectedItem((String) curso.getCampus());
+                        	
+                        	if (curso.getPeriodo().equals(rdMatutino.getText())) {
+                                rdMatutino.setSelected(true);
+                            } else if (curso.getPeriodo().equals(rdVespertino.getText())) {
+                                rdVespertino.setSelected(true);
+                            } else if (curso.getPeriodo().equals(rdNoturno.getText())) {
+                                rdNoturno.setSelected(true);
+                            }
+                        	
+                        }
+                        
+                    } else {
+                        lblMensagemAluno.setText("Aluno não encontrado");
+                    }
+                } catch (Exception ex) {
+                	lblMensagemAluno.setText("Erro ao consultar");
+                }
+			}
+		});
+		
+		mnExcluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+		        try {
+		            // Obtém o RA do campo de texto
+		            int raAluno = Integer.parseInt(txtRa.getText());
+		            
+		            // Consulta o aluno no banco de dados usando o RA
+		            AlunoDAO alunoDao = new AlunoDAO();
+		            Aluno aluno = alunoDao.consultar(raAluno); // Aqui você obtém o aluno
+		            
+		            // Verifica se o aluno foi encontrado
+		            if (aluno != null) {
+		                // Obtém o nome do aluno
+		                String nomeAluno = aluno.getNomeAluno();
+		                
+		                // Exibe um diálogo de confirmação com o nome do aluno
+		                int confirmarExclusao = JOptionPane.showConfirmDialog(null, 
+		                    "Tem certeza que deseja excluir o aluno " + nomeAluno + "?", 
+		                    "Confirmação da Exclusão", 
+		                    JOptionPane.YES_NO_OPTION);
+		                
+		                // Se o usuário confirmar a exclusão
+		                if (confirmarExclusao == JOptionPane.YES_OPTION) {
+		                    // Exclui o aluno
+		                    alunoDao.excluir(raAluno);
+		                    
+		                    // Exibe mensagem de sucesso
+		                    lblMensagemAluno.setText("Aluno " + nomeAluno + " excluído com sucesso!");
+		                } else {
+		                	lblMensagemAluno.setText("Exclusão do aluno " + nomeAluno + " cancelada.");
+		                }
+		            } else {
+		            	lblMensagemAluno.setText("Aluno com RA " + raAluno + " não encontrado.");
+		            }
+		        } catch (NumberFormatException nfe) {
+		        	lblMensagemAluno.setText("RA inválido");
+		            System.out.println("Erro ao converter RA: " + nfe.getMessage());
+		        } catch (Exception ex) {
+		        	lblMensagemAluno.setText("Erro ao excluir o aluno");
+		            System.out.println(ex.getMessage());
+		        }
+			}
+		});
+		
 		btnAlterarDados = new JButton("Alterar");
 		btnAlterarDados.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -474,6 +594,69 @@ public class TelaPrincipal extends JFrame {
 		btnAlterarDados.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnAlterarDados.setBounds(155, 322, 119, 37);
 		dadosPessoais.add(btnAlterarDados);
+		
+		mnEditarAluno.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					aluno = new Aluno();
+		            // Verifica se os campos obrigatórios estão preenchidos
+		            if (txtRa.getText().trim().isEmpty()) {
+		                lblMensagemAluno.setText("O campo RA é obrigatório.");
+		                return; // Sai do método para evitar a continuação do processo
+		            }
+		            if (txtNome.getText().trim().isEmpty()) {
+		                lblMensagemAluno.setText("O campo Nome é obrigatório.");
+		                return;
+		            }
+		            if (txtEmail.getText().trim().isEmpty()) {
+		                lblMensagemAluno.setText("O campo Email é obrigatório.");
+		                return;
+		            }
+		            if (formatedTxtDataNascimento.getText().trim().isEmpty()) {
+		                lblMensagemAluno.setText("O campo Data de Nascimento é obrigatório.");
+		                return;
+		            }
+		            if (txtEndereco.getText().trim().isEmpty()) {
+		                lblMensagemAluno.setText("O campo Endereço é obrigatório.");
+		                return;
+		            }
+		            if (formatedTxtCelular.getText().trim().isEmpty()) {
+		                lblMensagemAluno.setText("O campo Celular é obrigatório.");
+		                return;
+		            }
+		            if (txtMunicipio.getText().trim().isEmpty()) {
+		                lblMensagemAluno.setText("O campo Município é obrigatório.");
+		                return;
+		            }
+		            if (cmbBoxUf.getSelectedItem() == null || ((String) cmbBoxUf.getSelectedItem()).trim().isEmpty()) {
+		                lblMensagemAluno.setText("O campo UF é obrigatório.");
+		                return;
+		            }
+		            if (formatedTxtCpf.getText().trim().isEmpty()) {
+		                lblMensagemAluno.setText("O campo CPF é obrigatório.");
+		                return;
+		            }					
+		            aluno.setNomeAluno(txtNome.getText());
+		            aluno.setEmailAluno(txtEmail.getText());
+		            aluno.setDataNascimento(formatedTxtDataNascimento.getText());
+		            aluno.setEnderecoAluno(txtEndereco.getText());
+		            aluno.setCelularAluno(formatedTxtCelular.getText());
+		            aluno.setMunicipioAluno(txtMunicipio.getText());
+		            aluno.setUfAluno((String) cmbBoxUf.getSelectedItem());
+		            aluno.setCpfAluno(formatedTxtCpf.getText());
+                    
+		            AlunoDAO alunoDao = new AlunoDAO();
+		            alunoDao.atualizar(aluno);
+
+		            lblMensagemAluno.setText("Dados atualizados com sucesso!");
+                } catch (Exception ex) {
+                    lblMensagemAluno.setText("Erro ao atualizar os dados");
+                    System.out.println(ex.getMessage());
+                }
+			}
+		});
+		
+		
 		
 		JButton btnExcluirAluno = new JButton("Excluir");
 		btnExcluirAluno.addActionListener(new ActionListener() {
@@ -582,6 +765,56 @@ public class TelaPrincipal extends JFrame {
 		btnSalvar.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        try {
+		            // Verifica se os campos obrigatórios estão preenchidos
+		            if (txtRa.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo RA é obrigatório.");
+		                return; // Sai do método para evitar a continuação do processo
+		            }
+		            if (txtNome.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Nome é obrigatório.");
+		                return;
+		            }
+		            if (txtEmail.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Email é obrigatório.");
+		                return;
+		            }
+		            if (formatedTxtDataNascimento.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Data de Nascimento é obrigatório.");
+		                return;
+		            }
+		            if (txtEndereco.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Endereço é obrigatório.");
+		                return;
+		            }
+		            if (formatedTxtCelular.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Celular é obrigatório.");
+		                return;
+		            }
+		            if (txtMunicipio.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Município é obrigatório.");
+		                return;
+		            }
+		            if (cmbBoxUf.getSelectedItem() == null || ((String) cmbBoxUf.getSelectedItem()).trim().isEmpty()) {
+		            	lblMensagem.setText("O campo UF é obrigatório.");
+		                return;
+		            }
+		            if (formatedTxtCpf.getText().trim().isEmpty()) {
+		            	lblMensagem.setText("O campo CPF é obrigatório.");
+		                return;
+		            }
+		            if(cmbBoxCurso.getSelectedItem() == null || ((String) cmbBoxCurso.getSelectedItem()).trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Curso é obrigatório");
+		            	return;
+		            }
+		            if(cmbBoxCampus.getSelectedItem() == null || ((String) cmbBoxCampus.getSelectedItem()).trim().isEmpty()) {
+		            	lblMensagem.setText("O campo Campus é obrigatório");
+		            	return;
+		            }
+		            String periodo = null;
+		            if (!rdMatutino.isSelected() && !rdVespertino.isSelected() && !rdNoturno.isSelected()) {
+		                lblMensagem.setText("O campo Período é obrigatório");
+		                return;
+		            } 
 		        	//inicializa o DAO para realizar a consulta
 		        	CursoDAO cursoDao = new CursoDAO();
 		            // cria o objeto para pegar os dados da tela
@@ -590,7 +823,7 @@ public class TelaPrincipal extends JFrame {
 		            // Defina os valores para o curso antes de salvá-lo
 		            String nomeCurso = (String) cmbBoxCurso.getSelectedItem();
 		            String campus = (String) cmbBoxCampus.getSelectedItem();
-		            String periodo = null;
+		            
 		            if (rdMatutino.isSelected()) {
 		                periodo = rdMatutino.getText();
 		            } else if (rdVespertino.isSelected()) {
@@ -654,7 +887,7 @@ public class TelaPrincipal extends JFrame {
 		lblMensagem = new JLabel("");
 		lblMensagem.setForeground(new Color(0, 0, 0));
 		lblMensagem.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblMensagem.setBounds(10, 338, 196, 21);
+		lblMensagem.setBounds(10, 338, 581, 21);
 		dadosCurso.add(lblMensagem);
 		
 		btnVoltar = new JButton("Voltar");
@@ -749,7 +982,7 @@ public class TelaPrincipal extends JFrame {
 		JLabel lblMensagemNotas = new JLabel("");
 		lblMensagemNotas.setForeground(Color.BLACK);
 		lblMensagemNotas.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblMensagemNotas.setBounds(21, 345, 196, 21);
+		lblMensagemNotas.setBounds(10, 384, 733, 21);
 		notasFaltas.add(lblMensagemNotas);
 		
 		JButton btnSalvarNotas = new JButton("Salvar");
@@ -882,6 +1115,7 @@ public class TelaPrincipal extends JFrame {
                         			txtNota1.setText(String.valueOf(notas.getNota()));
                         			txtNota2.setText(String.valueOf(notas.getNota2()));
                         			lblMostrarMedia.setText(String.valueOf(notas.getMedia()));
+                        			lblMensagemNotas.setText(null);
                         		}
                         	}else {
                         		cmbBoxSemestre.setSelectedIndex(-1);
@@ -907,6 +1141,113 @@ public class TelaPrincipal extends JFrame {
 		btnBuscarRa.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnBuscarRa.setBounds(379, 34, 85, 35);
 		notasFaltas.add(btnBuscarRa);
+		
+		mnConsultarNotas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					AlunoDAO alunoDao = new AlunoDAO();
+					int ra = Integer.parseInt(txtRaBusca.getText());
+					aluno = alunoDao.consultar(ra);
+					
+					lblAluno.setText(aluno.getNomeAluno());
+					
+					//verifica se o aluno foi encontrado
+					if (aluno != null) {
+                        //mostra o aluno
+						lblAluno.setText(aluno.getNomeAluno());
+						
+                        CursoDAO cursoDao = new CursoDAO();
+                        Curso curso = cursoDao.consultar(aluno.getRaAluno());
+                        
+                        if(curso != null) {
+                        	lblCursoAluno.setText(curso.getCurso());
+                        	
+                        	List<Disciplina> disciplinas = cursoDao.getDisciplinas(curso.getIdCurso());
+                        	cmbBoxDisciplina.removeAllItems();
+                        	
+                        	for(Disciplina disciplina : disciplinas) {
+                        		cmbBoxDisciplina.addItem(disciplina.getNomeDisciplina());
+                        	}
+                        	
+                        	NotasDAO notasDao = new NotasDAO();
+                        	List<Notas> listaNotas = notasDao.consultar(aluno.getRaAluno());
+                        	
+                        	if(listaNotas != null && !listaNotas.isEmpty()) {
+                        		int somaNotas = 0;
+                        		for(Notas notas : listaNotas) {
+                        			cmbBoxSemestre.setSelectedItem(notas.getSemestre());
+                        			txtFaltas.setText(String.valueOf(notas.getFaltas()));
+                        			txtNota1.setText(String.valueOf(notas.getNota()));
+                        			txtNota2.setText(String.valueOf(notas.getNota2()));
+                        			lblMostrarMedia.setText(String.valueOf(notas.getMedia()));
+                        			lblMensagemNotas.setText(null);
+                        		}
+                        	}else {
+                        		cmbBoxSemestre.setSelectedIndex(-1);
+                                txtFaltas.setText("");
+                                txtNota1.setText("");
+                                txtNota2.setText("");
+                                lblMostrarMedia.setText("");
+                        	}
+                        }else {
+                        	lblCursoAluno.setText("Curso não encontrado");
+                        }
+                    } else {
+                        lblAluno.setText("Aluno não encontrado.");
+                        lblCursoAluno.setText("Curso não encontrado");
+                    }
+					
+		        } catch (Exception ex) {
+		            
+		            System.out.println("Erro: " + ex.getMessage());
+		        }
+			}
+		});
+		
+		mnExcluirNotas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+					AlunoDAO alunoDao = new AlunoDAO();
+					NotasDAO notasDao = new NotasDAO();
+					int raAluno = Integer.parseInt(txtRaBusca.getText());
+					
+					Aluno aluno = alunoDao.consultar(raAluno);
+										
+					if(aluno != null) {
+						String nomeAluno = aluno.getNomeAluno();
+						List<Notas> listaNotas = notasDao.consultar(raAluno);
+
+						if(listaNotas != null && !listaNotas.isEmpty()) {
+							for(Notas nota : listaNotas) {
+								notasDao.excluir(nota);
+							}
+							// Exibe um diálogo de confirmação com o nome do aluno
+			                int confirmarExclusao = JOptionPane.showConfirmDialog(null, 
+			                    "Tem certeza que deseja excluir notas do aluno " + nomeAluno + "?", 
+			                    "Confirmação da Exclusão", 
+			                    JOptionPane.YES_NO_OPTION);
+			                
+			                // Se o usuário confirmar a exclusão
+			                if (confirmarExclusao == JOptionPane.YES_OPTION) {
+			                	for (Notas nota : listaNotas) {
+		                            notasDao.excluir(nota); // Exclui cada nota
+		                        }
+			                    			                    
+			                	lblMensagemNotas.setText("Notas excluídas com sucesso para o aluno " + nomeAluno + "!");
+			                } else {
+			                	lblMensagemNotas.setText("Exclusão de notas do aluno " + nomeAluno + " cancelada.");
+			                }
+						}else {
+							lblMensagemNotas.setText("Nehuma nota encontrada para excluir");
+						}
+					}
+					
+				}catch(Exception ex) {
+					lblMensagemNotas.setText("Erro ao excluir notas");
+					System.out.println(ex.getMessage());
+				}
+			}
+		});
 		
 		cmbBoxDisciplina.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -940,29 +1281,94 @@ public class TelaPrincipal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try{
 					AlunoDAO alunoDao = new AlunoDAO();
+					NotasDAO notasDao = new NotasDAO();
 					int raAluno = Integer.parseInt(txtRaBusca.getText());
-					List<Notas> listaNotas = notasDao.consultar(raAluno);
 					
-					if(listaNotas != null && !listaNotas.isEmpty()) {
-						for(Notas nota : listaNotas) {
-							notasDao.excluir(nota);
+					Aluno aluno = alunoDao.consultar(raAluno);
+										
+					if(aluno != null) {
+						String nomeAluno = aluno.getNomeAluno();
+						List<Notas> listaNotas = notasDao.consultar(raAluno);
+
+						if(listaNotas != null && !listaNotas.isEmpty()) {
+							for(Notas nota : listaNotas) {
+								notasDao.excluir(nota);
+							}
+							// Exibe um diálogo de confirmação com o nome do aluno
+			                int confirmarExclusao = JOptionPane.showConfirmDialog(null, 
+			                    "Tem certeza que deseja excluir notas do aluno " + nomeAluno + "?", 
+			                    "Confirmação da Exclusão", 
+			                    JOptionPane.YES_NO_OPTION);
+			                
+			                // Se o usuário confirmar a exclusão
+			                if (confirmarExclusao == JOptionPane.YES_OPTION) {
+			                	for (Notas nota : listaNotas) {
+		                            notasDao.excluir(nota); // Exclui cada nota
+		                        }
+			                    			                    
+			                	lblMensagemNotas.setText("Notas excluídas com sucesso para o aluno " + nomeAluno + "!");
+			                } else {
+			                	lblMensagemNotas.setText("Exclusão de notas do aluno " + nomeAluno + " cancelada.");
+			                }
+						}else {
+							lblMensagemNotas.setText("Nehuma nota encontrada para excluir");
 						}
-						lblMensagemNotas.setText("Notas Excluídas com sucesso!");
-					}else {
-						lblMensagemNotas.setText("Nehuma nota encontrada para excluir");
 					}
+					
 				}catch(Exception ex) {
 					lblMensagemNotas.setText("Erro ao excluir notas");
 					System.out.println(ex.getMessage());
 				}
-				
-				
 			}
 		});
 		btnExcluirNotas.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnExcluirNotas.setBounds(554, 309, 85, 35);
 		notasFaltas.add(btnExcluirNotas);
 		
+		mnEditarNotas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					//inicializa o DAO para realizar a consulta
+		        	AlunoDAO alunoDao = new AlunoDAO();
+		        	aluno = alunoDao.consultar(Integer.parseInt(txtRaBusca.getText()));
+		            
+		        	if(aluno != null) {
+		        		notas = new Notas();
+		        		// Defina os valores para notas
+			            notas.setDisciplina((String) cmbBoxDisciplina.getSelectedItem());
+			            notas.setSemestre((String) cmbBoxSemestre.getSelectedItem());
+			            
+			            double nota1 = Double.parseDouble(txtNota1.getText());
+		                double nota2 = Double.parseDouble(txtNota2.getText());
+		                notas.setNota(nota1);
+		                notas.setNota2(nota2);
+			            double media = (nota1 + nota2) / 2;
+			            
+			            notas.setMedia(media);
+			            
+			            notas.setFaltas(Integer.parseInt(txtFaltas.getText()));
+			            notas.setRaAluno(aluno.getRaAluno());
+			            
+			            NotasDAO notasDao = new NotasDAO();
+			            int idDisciplina = notasDao.buscarIdDisciplina(notas.getDisciplina());
+			            notas.setIdDisciplina(idDisciplina);
+			            
+			            System.out.println("Tentando inserir notas com idDisciplina: " + notas.getIdDisciplina());
+			            
+			            if(notas.getNota() < 0 || notas.getNota() > 10) {
+			            	lblMensagemNotas.setText("Digite uma nota válida");
+			            }else {
+			            	notasDao.salvar(notas);
+				            lblMensagemNotas.setText("Salvo com Sucesso!");
+			            }
+		        	}	
+		        	
+				} catch (Exception el) {
+					lblMensagemNotas.setText("Erro ao salvar");
+					System.out.println(el.getMessage());
+				}
+			}
+		});
 		//========================== BOLETIM =============================//
 		JPanel dadosBoletim = new JPanel();
 		tabbedPane.addTab("Boletim", null, dadosBoletim, null);

@@ -150,20 +150,31 @@ public class NotasDAO {
 	}
 
 	//================================ DELETE ======================================//
-	public void excluir(Notas notas) throws Exception{
-		if(notas == null)
-			throw new Exception("O valor passado não pode ser nulo");
-		try {
-			String SQL = "DELETE FROM notas WHERE idNota = ?";
-			conn = this.conn;
-			ps = conn.prepareStatement(SQL);
-			ps.setInt(1, notas.getIdNota());
-			ps.executeUpdate();
-		}catch(SQLException sqle) {
-			throw new Exception("Erro ao excluir dados " + sqle);
-		}finally {
-			ConnectionFactory.closeConnection(conn, ps);
-		}
+	public void excluir(Notas notas) throws Exception {
+	    if (notas == null) {
+	        throw new Exception("O valor passado não pode ser nulo");
+	    }
+	    
+	    Connection conn = null;
+	    PreparedStatement ps = null;
+	    
+	    try {
+	        
+	        conn = ConnectionFactory.getConnection(); 
+	        
+	        String SQL = "DELETE FROM notas WHERE idNotas = ?";
+	        ps = conn.prepareStatement(SQL);
+	        ps.setInt(1, notas.getIdNota());
+	        
+	        ps.executeUpdate();
+	        
+	        System.out.println("Nota excluída com sucesso: ID " + notas.getIdNota());
+	    } catch (SQLException sqle) {
+	        throw new Exception("Erro ao excluir dados " + sqle);
+	    } finally {
+	        
+	        ConnectionFactory.closeConnection(conn, ps);
+	    }
 	}
 	
 	public String calcularMedia(List<Notas> listaNotas) {
