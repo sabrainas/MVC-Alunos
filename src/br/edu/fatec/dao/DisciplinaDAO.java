@@ -43,7 +43,7 @@ public class DisciplinaDAO {
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(SQL)) {
             ps.setString(1, disciplina.getNomeDisciplina());
-            ps.setInt(2, disciplina.getIdCurso()); // Assumindo que Disciplina tem idCurso
+            ps.setInt(2, disciplina.getIdCurso()); 
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -93,7 +93,7 @@ public class DisciplinaDAO {
                     disciplina = new Disciplina();
                     disciplina.setIdDisciplina(rs.getInt("idDisciplina"));
                     disciplina.setNomeDisciplina(rs.getString("nomeDisciplina"));
-                    disciplina.setIdCurso(rs.getInt("idCurso")); // Assumindo que a Disciplina também tem idCurso
+                    disciplina.setIdCurso(rs.getInt("idCurso")); 
                 }
             }
         } catch (SQLException e) {

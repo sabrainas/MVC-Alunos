@@ -123,7 +123,6 @@ public class NotasDAO {
 	        rs = stmt.executeQuery();
 
 	        if (rs.next()) {
-	            // Criar um objeto Notas com os dados do ResultSet
 	            notas = new Notas();
 	            notas.setRaAluno(rs.getInt("raAluno"));
 	            notas.setDisciplina(rs.getString("disciplina"));
@@ -136,7 +135,6 @@ public class NotasDAO {
 	    } catch (SQLException e) {
 	        System.out.println("Erro ao consultar notas: " + e.getMessage());
 	    } finally {
-	        // Fechar recursos
 	        try {
 	            if (rs != null) rs.close();
 	            if (stmt != null) stmt.close();

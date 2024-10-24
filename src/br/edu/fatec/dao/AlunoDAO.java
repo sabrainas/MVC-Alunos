@@ -33,7 +33,6 @@ public class AlunoDAO {
 	        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 	        Date dataNasc = format.parse(dataNascTexto);
 
-	        // Formata a data para o padrão aceito pelo MySQL (yyyy-MM-dd)
 	        SimpleDateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd");
 	        String dataSql = sqlFormat.format(dataNasc);
 			
@@ -65,9 +64,7 @@ public class AlunoDAO {
 	    Connection conn = null;
 	    PreparedStatement ps = null;
 	    try {
-	    	// Obtém a conexão
 	        conn = ConnectionFactory.getConnection();
-	    	//exclui o aluno
 	        String SQL = "DELETE FROM alunos WHERE raAluno = ?";
 	        ps = conn.prepareStatement(SQL);
 	        ps.setInt(1, raAluno);  
@@ -80,13 +77,12 @@ public class AlunoDAO {
 	}
 	
 	public Aluno consultar(int raAluno) throws Exception {
-	    // Verifica se o RA é inválido
+
 	    if (raAluno <= 0) {
 	        throw new Exception("O RA passado não pode ser nulo ou negativo");
 	    }
 
-	    Aluno aluno = null; // Inicializa o aluno como nulo
-
+	    Aluno aluno = null;
 	    try {
 	    		        
 			String SQL = "SELECT * FROM alunos WHERE raAluno=?";
@@ -128,13 +124,12 @@ public class AlunoDAO {
 				throw new Exception("O valor passado não pode ser nulo");
 			
 			if (conn == null || conn.isClosed()) {
-	            conn = ConnectionFactory.getConnection(); // Abre uma nova conexão, se necessário
+	            conn = ConnectionFactory.getConnection(); 
 	        }
 			String dataNascTexto = aluno.getDataNascimento();
 	        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 	        Date dataNasc = format.parse(dataNascTexto);
 
-	        // Formata a data para o padrão aceito pelo MySQL (yyyy-MM-dd)
 	        SimpleDateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd");
 	        String dataSql = sqlFormat.format(dataNasc);
 			String SQL = "UPDATE alunos SET nomeAluno=?, emailAluno=?, dataNascimento=?, enderecoAluno=?, celularAluno=?, municipioAluno=?, ufAluno=?, cpfAluno=? WHERE raAluno=?";

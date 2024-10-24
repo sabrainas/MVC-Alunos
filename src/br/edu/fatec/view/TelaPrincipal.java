@@ -28,6 +28,8 @@ import java.awt.GridLayout;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.awt.event.InputEvent;
@@ -50,6 +52,7 @@ import java.awt.Panel;
 import java.awt.TextArea;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.ImageIcon;
 
 public class TelaPrincipal extends JFrame {
 	
@@ -138,13 +141,6 @@ public class TelaPrincipal extends JFrame {
 		mnExcluir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
 		mnExcluir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuAluno.add(mnExcluir);
-		
-		JMenuItem mnSairAluno = new JMenuItem("Sair");
-		JSeparator separator = new JSeparator();
-		menuAluno.add(separator);
-		mnSairAluno.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
-		mnSairAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		menuAluno.add(mnSairAluno);
 		
 		// BOTÃO MENU SALVAR ALUNO
 		JMenuItem mnSalvarAluno = new JMenuItem("Salvar");
@@ -252,13 +248,21 @@ public class TelaPrincipal extends JFrame {
 		mnSalvarAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuAluno.add(mnSalvarAluno);
 		
-		//MENU SAIR
+		JSeparator separator = new JSeparator();
+		menuAluno.add(separator);
 		
+		JMenuItem mnSairAluno = new JMenuItem("Sair");
+		mnSairAluno.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
 		mnSairAluno.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				int confirm = JOptionPane.showConfirmDialog(null, "Você realmente deseja sair?", "Sair", JOptionPane.YES_NO_OPTION);
+		        if (confirm == JOptionPane.YES_OPTION) {
+		            System.exit(0); 
+		        }
 			}
 		});
+		mnSairAluno.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		menuAluno.add(mnSairAluno);
 		
 		
 		JMenu mnNewMenu = new JMenu("Ajudar");
@@ -405,7 +409,9 @@ public class TelaPrincipal extends JFrame {
 		formatedTxtCelular.setBounds(578, 252, 195, 37);
 		dadosPessoais.add(formatedTxtCelular);
 				
-		btnProximo = new JButton("Próximo");
+		btnProximo = new JButton("");
+		btnProximo.setIcon(new ImageIcon("C:\\Users\\wrmi\\Documents\\sabrainas\\FATEC\\PROGRAMAÇÃO ORIENTADA A OBJETOS\\MVC\\src\\br\\edu\\fatec\\view\\seta-direita (1).png"));
+		btnProximo.setHorizontalTextPosition(SwingConstants.RIGHT);
 		btnProximo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tabbedPane.setSelectedIndex(1);
@@ -427,6 +433,7 @@ public class TelaPrincipal extends JFrame {
 		
 		
 		JButton btnBuscarAluno = new JButton("Consultar");
+		btnBuscarAluno.setIcon(new ImageIcon("C:\\Users\\wrmi\\Documents\\sabrainas\\FATEC\\PROGRAMAÇÃO ORIENTADA A OBJETOS\\MVC\\src\\br\\edu\\fatec\\view\\procurar.png"));
 		btnBuscarAluno.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -567,6 +574,7 @@ public class TelaPrincipal extends JFrame {
 		});
 		
 		btnAlterarDados = new JButton("Alterar");
+		btnAlterarDados.setIcon(new ImageIcon("C:\\Users\\wrmi\\Documents\\sabrainas\\FATEC\\PROGRAMAÇÃO ORIENTADA A OBJETOS\\MVC\\src\\br\\edu\\fatec\\view\\troca.png"));
 		btnAlterarDados.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -659,6 +667,7 @@ public class TelaPrincipal extends JFrame {
 		
 		
 		JButton btnExcluirAluno = new JButton("Excluir");
+		btnExcluirAluno.setIcon(new ImageIcon("C:\\Users\\wrmi\\Documents\\sabrainas\\FATEC\\PROGRAMAÇÃO ORIENTADA A OBJETOS\\MVC\\src\\br\\edu\\fatec\\view\\excluir.png"));
 		btnExcluirAluno.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        try {
@@ -759,8 +768,9 @@ public class TelaPrincipal extends JFrame {
 		grupoPeriodo.add(rdNoturno);
 		
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.setIcon(new ImageIcon("C:\\Users\\aluno_lab3\\Downloads\\salve-.png"));
 		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnSalvar.setBounds(612, 282, 85, 35);
+		btnSalvar.setBounds(612, 282, 103, 35);
 		dadosCurso.add(btnSalvar);
 		btnSalvar.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -863,7 +873,8 @@ public class TelaPrincipal extends JFrame {
 		    }
 		});
 		
-		JButton btnNovoCadastro = new JButton("Novo Cadastro");
+		JButton btnNovoCadastro = new JButton("Novo");
+		btnNovoCadastro.setIcon(new ImageIcon("C:\\Users\\wrmi\\Documents\\sabrainas\\FATEC\\PROGRAMAÇÃO ORIENTADA A OBJETOS\\MVC\\src\\br\\edu\\fatec\\view\\salve-.png"));
 		btnNovoCadastro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setAllFieldsEnabled(true);
@@ -890,14 +901,15 @@ public class TelaPrincipal extends JFrame {
 		lblMensagem.setBounds(10, 338, 581, 21);
 		dadosCurso.add(lblMensagem);
 		
-		btnVoltar = new JButton("Voltar");
+		btnVoltar = new JButton("");
+		btnVoltar.setIcon(new ImageIcon("C:\\Users\\wrmi\\Documents\\sabrainas\\FATEC\\PROGRAMAÇÃO ORIENTADA A OBJETOS\\MVC\\src\\br\\edu\\fatec\\view\\seta-esquerda.png"));
 		btnVoltar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tabbedPane.setSelectedIndex(0);
 			}
 		});
 		btnVoltar.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnVoltar.setBounds(72, 282, 85, 35);
+		btnVoltar.setBounds(72, 282, 125, 35);
 		dadosCurso.add(btnVoltar);
 		
 
@@ -986,6 +998,7 @@ public class TelaPrincipal extends JFrame {
 		notasFaltas.add(lblMensagemNotas);
 		
 		JButton btnSalvarNotas = new JButton("Salvar");
+		btnSalvarNotas.setIcon(new ImageIcon("C:\\Users\\wrmi\\Documents\\sabrainas\\FATEC\\PROGRAMAÇÃO ORIENTADA A OBJETOS\\MVC\\src\\br\\edu\\fatec\\view\\salve-.png"));
 		btnSalvarNotas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -1032,7 +1045,7 @@ public class TelaPrincipal extends JFrame {
 			}
 		});
 		btnSalvarNotas.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnSalvarNotas.setBounds(669, 309, 85, 35);
+		btnSalvarNotas.setBounds(649, 309, 105, 35);
 		notasFaltas.add(btnSalvarNotas);
 		
 		JLabel lblNota2 = new JLabel("Nota 2:");
@@ -1063,10 +1076,16 @@ public class TelaPrincipal extends JFrame {
 					int ra = Integer.parseInt(txtRaBusca.getText());
 					List<Notas> listaNotas = notasDao.consultar(ra);
 					System.out.println("Notas encontradas: " + listaNotas.size());
+					double nota1 = Double.parseDouble(txtNota1.getText());
+		            double nota2 = Double.parseDouble(txtNota2.getText());
+		            
+		            // Exemplo de cálculo (soma, neste caso)
+		            double resultadoMedia = (nota1 + nota2) / 2;
+		            
 					
 					String resultado = notasDao.calcularMedia(listaNotas);
 					lblMostrarMedia.setText(resultado);
-					
+					lblMostrarMedia.setText(String.valueOf(resultadoMedia));
 				}catch(Exception ex) {
 					System.out.println("Erro " + ex.getMessage());
 				}
@@ -1077,69 +1096,76 @@ public class TelaPrincipal extends JFrame {
 		notasFaltas.add(btnCalcular);
 		
 		JButton btnBuscarRa = new JButton("Buscar");
+		btnBuscarRa.setIcon(new ImageIcon("C:\\Users\\wrmi\\Documents\\sabrainas\\FATEC\\PROGRAMAÇÃO ORIENTADA A OBJETOS\\MVC\\src\\br\\edu\\fatec\\view\\procurar.png"));
 		btnBuscarRa.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					AlunoDAO alunoDao = new AlunoDAO();
-					int ra = Integer.parseInt(txtRaBusca.getText());
-					aluno = alunoDao.consultar(ra);
-					
-					lblAluno.setText(aluno.getNomeAluno());
-					
-					//verifica se o aluno foi encontrado
-					if (aluno != null) {
-                        //mostra o aluno
-						lblAluno.setText(aluno.getNomeAluno());
-						
-                        CursoDAO cursoDao = new CursoDAO();
-                        Curso curso = cursoDao.consultar(aluno.getRaAluno());
-                        
-                        if(curso != null) {
-                        	lblCursoAluno.setText(curso.getCurso());
-                        	
-                        	List<Disciplina> disciplinas = cursoDao.getDisciplinas(curso.getIdCurso());
-                        	cmbBoxDisciplina.removeAllItems();
-                        	
-                        	for(Disciplina disciplina : disciplinas) {
-                        		cmbBoxDisciplina.addItem(disciplina.getNomeDisciplina());
-                        	}
-                        	
-                        	NotasDAO notasDao = new NotasDAO();
-                        	List<Notas> listaNotas = notasDao.consultar(aluno.getRaAluno());
-                        	
-                        	if(listaNotas != null && !listaNotas.isEmpty()) {
-                        		int somaNotas = 0;
-                        		for(Notas notas : listaNotas) {
-                        			cmbBoxSemestre.setSelectedItem(notas.getSemestre());
-                        			txtFaltas.setText(String.valueOf(notas.getFaltas()));
-                        			txtNota1.setText(String.valueOf(notas.getNota()));
-                        			txtNota2.setText(String.valueOf(notas.getNota2()));
-                        			lblMostrarMedia.setText(String.valueOf(notas.getMedia()));
-                        			lblMensagemNotas.setText(null);
-                        		}
-                        	}else {
-                        		cmbBoxSemestre.setSelectedIndex(-1);
-                                txtFaltas.setText("");
-                                txtNota1.setText("");
-                                txtNota2.setText("");
-                                lblMostrarMedia.setText("");
-                        	}
-                        }else {
-                        	lblCursoAluno.setText("Curso não encontrado");
-                        }
-                    } else {
-                        lblAluno.setText("Aluno não encontrado.");
-                        lblCursoAluno.setText("Curso não encontrado");
-                    }
-					
-		        } catch (Exception ex) {
+		    public void actionPerformed(ActionEvent e) {
+		        try {
+		            AlunoDAO alunoDao = new AlunoDAO();
+		            int ra = Integer.parseInt(txtRaBusca.getText());
+		            aluno = alunoDao.consultar(ra);
 		            
+		            
+		            if (aluno != null) {
+		                lblAluno.setText(aluno.getNomeAluno());
+		                
+		                CursoDAO cursoDao = new CursoDAO();
+		                Curso curso = cursoDao.consultar(aluno.getRaAluno());
+		                
+		                if (curso != null) {
+		                    lblCursoAluno.setText(curso.getCurso());
+		                    
+		                    List<Disciplina> disciplinas = cursoDao.getDisciplinas(curso.getIdCurso());
+		                    cmbBoxDisciplina.removeAllItems();
+		                    
+		                    for (Disciplina disciplina : disciplinas) {
+		                        cmbBoxDisciplina.addItem(disciplina.getNomeDisciplina());
+		                    }
+		                    
+		                    NotasDAO notasDao = new NotasDAO();
+		                    List<Notas> listaNotas = notasDao.consultar(aluno.getRaAluno());
+		                    
+		                    if (listaNotas != null && !listaNotas.isEmpty()) {
+		                        for (Notas notas : listaNotas) {
+		                            cmbBoxSemestre.setSelectedItem(notas.getSemestre());
+		                            txtFaltas.setText(String.valueOf(notas.getFaltas()));
+		                            txtNota1.setText(String.valueOf(notas.getNota()));
+		                            txtNota2.setText(String.valueOf(notas.getNota2()));
+		                            lblMostrarMedia.setText(String.valueOf(notas.getMedia()));
+		                            lblMensagemNotas.setText(null);
+		                        }
+		                    } else {
+		                        
+		                        cmbBoxSemestre.setSelectedIndex(-1);
+		                        txtFaltas.setText("");
+		                        txtNota1.setText("");
+		                        txtNota2.setText("");
+		                        lblMostrarMedia.setText("");
+		                        lblMensagemNotas.setText("Nenhuma nota encontrada.");
+		                    }
+		                } else {
+		                    lblCursoAluno.setText("Curso não encontrado");
+		                }
+		            } else {
+		                lblAluno.setText("Aluno não encontrado.");
+		                lblCursoAluno.setText("Curso não encontrado");
+		                
+		                cmbBoxDisciplina.removeAllItems();
+		                cmbBoxSemestre.setSelectedIndex(-1);
+		                txtFaltas.setText("");
+		                txtNota1.setText("");
+		                txtNota2.setText("");
+		                lblMostrarMedia.setText("");
+		                lblMensagemNotas.setText("");
+		            }
+		        } catch (Exception ex) {
 		            System.out.println("Erro: " + ex.getMessage());
+		            ex.printStackTrace(); 
 		        }
-			}
+		    }
 		});
+
 		btnBuscarRa.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnBuscarRa.setBounds(379, 34, 85, 35);
+		btnBuscarRa.setBounds(379, 34, 121, 35);
 		notasFaltas.add(btnBuscarRa);
 		
 		mnConsultarNotas.addActionListener(new ActionListener() {
@@ -1221,16 +1247,14 @@ public class TelaPrincipal extends JFrame {
 							for(Notas nota : listaNotas) {
 								notasDao.excluir(nota);
 							}
-							// Exibe um diálogo de confirmação com o nome do aluno
 			                int confirmarExclusao = JOptionPane.showConfirmDialog(null, 
 			                    "Tem certeza que deseja excluir notas do aluno " + nomeAluno + "?", 
 			                    "Confirmação da Exclusão", 
 			                    JOptionPane.YES_NO_OPTION);
 			                
-			                // Se o usuário confirmar a exclusão
 			                if (confirmarExclusao == JOptionPane.YES_OPTION) {
 			                	for (Notas nota : listaNotas) {
-		                            notasDao.excluir(nota); // Exclui cada nota
+		                            notasDao.excluir(nota); 
 		                        }
 			                    			                    
 			                	lblMensagemNotas.setText("Notas excluídas com sucesso para o aluno " + nomeAluno + "!");
@@ -1277,52 +1301,49 @@ public class TelaPrincipal extends JFrame {
 		});
 		
 		JButton btnExcluirNotas = new JButton("Excluir");
+		btnExcluirNotas.setIcon(new ImageIcon("C:\\Users\\wrmi\\Documents\\sabrainas\\FATEC\\PROGRAMAÇÃO ORIENTADA A OBJETOS\\MVC\\src\\br\\edu\\fatec\\view\\excluir.png"));
 		btnExcluirNotas.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try{
-					AlunoDAO alunoDao = new AlunoDAO();
-					NotasDAO notasDao = new NotasDAO();
-					int raAluno = Integer.parseInt(txtRaBusca.getText());
-					
-					Aluno aluno = alunoDao.consultar(raAluno);
-										
-					if(aluno != null) {
-						String nomeAluno = aluno.getNomeAluno();
-						List<Notas> listaNotas = notasDao.consultar(raAluno);
+		    public void actionPerformed(ActionEvent e) {
+		        try {
+		            AlunoDAO alunoDao = new AlunoDAO();
+		            NotasDAO notasDao = new NotasDAO();
+		            int raAluno = Integer.parseInt(txtRaBusca.getText());
+		            
+		            Aluno aluno = alunoDao.consultar(raAluno);
+		            
+		            if (aluno != null) {
+		                String nomeAluno = aluno.getNomeAluno();
+		                List<Notas> listaNotas = notasDao.consultar(raAluno);
 
-						if(listaNotas != null && !listaNotas.isEmpty()) {
-							for(Notas nota : listaNotas) {
-								notasDao.excluir(nota);
-							}
-							// Exibe um diálogo de confirmação com o nome do aluno
-			                int confirmarExclusao = JOptionPane.showConfirmDialog(null, 
-			                    "Tem certeza que deseja excluir notas do aluno " + nomeAluno + "?", 
-			                    "Confirmação da Exclusão", 
-			                    JOptionPane.YES_NO_OPTION);
-			                
-			                // Se o usuário confirmar a exclusão
-			                if (confirmarExclusao == JOptionPane.YES_OPTION) {
-			                	for (Notas nota : listaNotas) {
-		                            notasDao.excluir(nota); // Exclui cada nota
+		                if (listaNotas != null && !listaNotas.isEmpty()) {
+		                    int confirmarExclusao = JOptionPane.showConfirmDialog(null, 
+		                        "Tem certeza que deseja excluir notas do aluno " + nomeAluno + "?", 
+		                        "Confirmação da Exclusão", 
+		                        JOptionPane.YES_NO_OPTION);
+		                    
+		                    if (confirmarExclusao == JOptionPane.YES_OPTION) {
+		                        for (Notas nota : listaNotas) {
+		                            notasDao.excluir(nota);
 		                        }
-			                    			                    
-			                	lblMensagemNotas.setText("Notas excluídas com sucesso para o aluno " + nomeAluno + "!");
-			                } else {
-			                	lblMensagemNotas.setText("Exclusão de notas do aluno " + nomeAluno + " cancelada.");
-			                }
-						}else {
-							lblMensagemNotas.setText("Nehuma nota encontrada para excluir");
-						}
-					}
-					
-				}catch(Exception ex) {
-					lblMensagemNotas.setText("Erro ao excluir notas");
-					System.out.println(ex.getMessage());
-				}
-			}
+		                        lblMensagemNotas.setText("Notas excluídas com sucesso para o aluno " + nomeAluno + "!");
+		                    } else {
+		                        lblMensagemNotas.setText("Exclusão de notas do aluno " + nomeAluno + " cancelada.");
+		                    }
+		                } else {
+		                    lblMensagemNotas.setText("Nenhuma nota encontrada para excluir");
+		                }
+		            } else {
+		                lblMensagemNotas.setText("Aluno não encontrado.");
+		            }
+		        } catch (Exception ex) {
+		            lblMensagemNotas.setText("Erro ao excluir notas");
+		            System.out.println(ex.getMessage());
+		        }
+		    }
 		});
+
 		btnExcluirNotas.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluirNotas.setBounds(554, 309, 85, 35);
+		btnExcluirNotas.setBounds(534, 309, 105, 35);
 		notasFaltas.add(btnExcluirNotas);
 		
 		mnEditarNotas.addActionListener(new ActionListener() {
@@ -1419,10 +1440,11 @@ public class TelaPrincipal extends JFrame {
 		tableBoletim.getColumnModel().getColumn(3).setPreferredWidth(80);
 		tableBoletim.setRowHeight(30);
 		JScrollPane scrollPane = new JScrollPane(tableBoletim);
-		scrollPane.setBounds(37, 246, 682, 120); // Define a altura do JScrollPane
+		scrollPane.setBounds(37, 246, 682, 120); 
 		dadosBoletim.add(scrollPane);
 		
 		JButton btnBuscarBoletim = new JButton("Buscar");
+		btnBuscarBoletim.setIcon(new ImageIcon("C:\\Users\\wrmi\\Documents\\sabrainas\\FATEC\\PROGRAMAÇÃO ORIENTADA A OBJETOS\\MVC\\src\\br\\edu\\fatec\\view\\procurar.png"));
 		btnBuscarBoletim.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        try {
@@ -1430,8 +1452,6 @@ public class TelaPrincipal extends JFrame {
 		            int ra = Integer.parseInt(txtRaBoletim.getText());
 		            aluno = alunoDao.consultar(ra);
 		            
-		            lblNomeAluno.setText(aluno.getNomeAluno());
-
 		            // Verifica se o aluno foi encontrado
 		            if (aluno != null) {
 		                System.out.println("Aluno encontrado: " + aluno.getNomeAluno());
@@ -1457,16 +1477,16 @@ public class TelaPrincipal extends JFrame {
 		                        System.out.println("Notas encontradas: " + listaNotas.size());
 
 		                        for (Notas notas : listaNotas) {
-		                        	String disciplina = notas.getDisciplina();
+		                            String disciplina = notas.getDisciplina();
 		                            System.out.println("Disciplina: " + notas.getDisciplina() + ", Nota: " + notas.getNota() + ", Faltas: " + notas.getFaltas());
 		                            
 		                            String situacao = notas.getMedia() >= 6 ? "Aprovado" : "Reprovado";
 		                            
 		                            tableModel.addRow(new Object[] {
-		                            		disciplina,
-		                            		notas.getMedia(),
-		                            		notas.getFaltas(),
-		                            		situacao
+		                                disciplina,
+		                                notas.getMedia(),
+		                                notas.getFaltas(),
+		                                situacao
 		                            });
 		                            somaNotas += notas.getMedia();
 		                        }
@@ -1476,28 +1496,33 @@ public class TelaPrincipal extends JFrame {
 		                        System.out.println("Nenhuma nota encontrada para o aluno.");
 		                        tableModel.addRow(new Object[]{"Nenhuma nota encontrada.", "", "", ""});
 		                    }
-
 		                    
 		                } else {
 		                    lblCursoAluno.setText("Curso não encontrado");
 		                }
 		            } else {
-		                lblAluno.setText("Aluno não encontrado.");
-		                lblCursoAluno.setText("Curso não encontrado");
+		                
+		                lblNomeAluno.setText("Aluno não encontrado.");
+		                lblRaAluno.setText(""); 
+		                lblCursoBoletim.setText("Curso não encontrado");
+		                
+		                DefaultTableModel tableModel = (DefaultTableModel) tableBoletim.getModel();
+		                tableModel.setRowCount(0);
 		            }
 		        } catch (Exception ex) {
-		            // Exibe outros erros no console ou em um label
+		            
 		            System.out.println("Erro: " + ex.getMessage());
 		            ex.printStackTrace();
 		        }
 
-			    dadosBoletim.revalidate();
-			    dadosBoletim.repaint();
+		        dadosBoletim.revalidate();
+		        dadosBoletim.repaint();
 		    }
 		});
 
+
 		btnBuscarBoletim.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnBuscarBoletim.setBounds(363, 19, 85, 35);
+		btnBuscarBoletim.setBounds(363, 19, 115, 35);
 		dadosBoletim.add(btnBuscarBoletim);
 			
 		
